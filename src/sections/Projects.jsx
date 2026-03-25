@@ -46,10 +46,18 @@ const PIN_COLORS = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6']
 
 const POLAROID_LAYOUT = [
   { rotate: -6,  x: -400, y: 20  },
-  { rotate:  3,  x: -195, y: -15 },
-  { rotate: -2,  x:   15, y: 25  },
-  { rotate:  7,  x:  220, y: -10 },
-  { rotate: -4,  x:  420, y: 20  },
+  { rotate:  3,  x: -185, y: -15 },
+  { rotate: -2,  x:    5, y: 25  },
+  { rotate:  7,  x:  215, y: -10 },
+  { rotate: -4,  x:  405, y: 20  },
+]
+
+const MOBILE_POLAROID_LAYOUT = [
+  { rotate: -5, x: -115, y: -190 },
+  { rotate:  4, x:  115, y: -170 },
+  { rotate: -3, x: -220, y:  40 },
+  { rotate: -1, x:    0, y:  60 },
+  { rotate:  5, x:  220, y:  30 },
 ]
 
 function Polaroid({ project, layout, pinColor, onClick }) {
@@ -85,6 +93,16 @@ function Polaroid({ project, layout, pinColor, onClick }) {
               <span key={t} style={{ fontFamily: "'DM Mono', monospace", fontSize: 6, padding: '2px 5px', border: '1px solid rgba(17,17,17,0.18)', color: '#333', borderRadius: 10 }}>{t}</span>
             ))}
           </div>
+          {project.liveUrl && (
+            <div style={{ marginTop: 10 }}>
+              <button 
+                onClick={(e) => { e.stopPropagation(); window.open(project.liveUrl, '_blank'); }}
+                style={{ fontFamily: "'DM Mono', monospace", fontSize: 8, fontWeight: 'bold', padding: '6px 10px', background: '#111', color: '#f5f0e4', borderRadius: 4, cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                LIVE DEMO <svg width={8} height={8} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>
@@ -92,11 +110,22 @@ function Polaroid({ project, layout, pinColor, onClick }) {
 }
 
 function PolaroidWall({ onExpand }) {
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   return (
-    <div style={{ position: 'absolute', bottom: '12%', left: '50%', transform: 'translateX(-50%)', width: '90vw', maxWidth: 1100, height: 380, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      {projects.map((project, i) => (
-        <Polaroid key={project.number} project={project} layout={POLAROID_LAYOUT[i]} pinColor={PIN_COLORS[i % PIN_COLORS.length]} onClick={onExpand} />
-      ))}
+    <div className="projects-wall-container" style={{ position: 'absolute', bottom: '12%', left: '50%', transform: 'translateX(-50%)', width: '90vw', maxWidth: 1100, height: 380, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {projects.map((project, i) => {
+        const layoutConfig = isMobile ? MOBILE_POLAROID_LAYOUT[i] || POLAROID_LAYOUT[i] : POLAROID_LAYOUT[i]
+        return (
+          <Polaroid key={project.number} project={project} layout={layoutConfig} pinColor={PIN_COLORS[i % PIN_COLORS.length]} onClick={onExpand} />
+        )
+      })}
     </div>
   )
 }
@@ -292,7 +321,7 @@ function HangingString({ pullY, isPulled, onToggleLight }) {
   }, [pullY, pullX, onPointerMove, onPointerUp])
 
   return (
-    <div style={{ position: 'absolute', top: 0, right: 250, width: 50, zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="projects-pull-string" style={{ position: 'absolute', top: 0, right: 250, width: 50, zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <div style={{ width: 24, height: 12, background: 'linear-gradient(180deg, #2e2010, #1a1208)', borderRadius: '5px 5px 2px 2px', border: '1px solid #3e2e18', boxShadow: '0 4px 12px rgba(0,0,0,0.95)', flexShrink: 0, zIndex: 2 }} />
       <div style={{ width: 7, height: 7, borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #9a8060, #2a1a0a)', border: '1px solid #6a5030', marginTop: -3, zIndex: 3, flexShrink: 0 }} />
       <div style={{ position: 'relative', width: 60, flexShrink: 0 }}>
@@ -348,6 +377,7 @@ function HangingString({ pullY, isPulled, onToggleLight }) {
 function WorkVaultHeading({ revealed }) {
   return (
     <motion.div
+      className="work-vault-heading"
       initial={{ opacity: 0, y: 50, scale: 0.94 }}
       animate={revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.94 }}
       transition={{ duration: 0.75, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}

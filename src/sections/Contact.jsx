@@ -94,6 +94,13 @@ export default function Contact() {
       setSending(true)
       setError('')
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(form.email)) {
+        setError('enter valid mail')
+        setSending(false)
+        return
+      }
+
       try {
         await emailjs.sendForm(
           'service_d7e772m',    // replace with your EmailJS Service ID
@@ -118,8 +125,8 @@ export default function Contact() {
   `
 
   return (
-    <section id="contact" className="bg-[#e8e6e1] py-24 px-10" style={{ minHeight: "55vh", position: "relative", zIndex: 1 }}>
-      <div className="max-w-6xl mx-auto grid grid-cols-2 gap-24" ref={ref}>
+    <section id="contact" className="bg-[#e8e6e1] py-24 px-10 contact-section" style={{ minHeight: "55vh", position: "relative", zIndex: 1 }}>
+      <div className="max-w-6xl mx-auto grid grid-cols-2 gap-24 contact-grid" ref={ref}>
 
         {/* Left */}
         <div>
@@ -165,7 +172,7 @@ export default function Contact() {
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ delay: 0.5 }}
-            className="flex gap-4 mt-10"
+            className="flex gap-4 mt-10 contact-socials-container"
           >
             {socials.map(s => {
               const Icon = SOCIAL_ICONS[s.name]

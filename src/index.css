@@ -127,3 +127,199 @@
     scroll-snap-type: y proximity;
   }
 }
+
+/* ==================================================
+   MOBILE RESPONSIVENESS (<= 768px)
+================================================== */
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll */
+  body, html {
+    overflow-x: hidden !important;
+  }
+
+  /* NAVBAR */
+  .nav-outer-wrapper {
+    z-index: 1000 !important;
+  }
+  .nav-container {
+    height: auto !important;
+    padding: 10px 14px !important;
+    flex-wrap: wrap !important;
+    border-radius: 20px !important;
+    background: rgba(255,255,255,0.96) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+  .hamburger-btn {
+    display: block !important;
+  }
+  .nav-links-wrapper {
+    display: none !important;
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-top: 15px !important;
+    padding-bottom: 10px !important;
+    background: transparent !important;
+  }
+  .nav-links-wrapper.mobile-open {
+    display: flex !important;
+  }
+  .nav-links-inner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+  .nav-links-inner a {
+    width: 100%;
+    padding: 10px 10px !important;
+  }
+
+  /* HERO */
+  .hero-freelance {
+    top: 20px !important;
+    left: 0px !important;
+    transform: scale(0.75) !important;
+    transform-origin: top left !important;
+  }
+  .hero-marquee {
+    font-size: 45vw !important;
+  }
+  .hero-marquee-gap {
+    width: 10px !important;
+  }
+  .hero-corner-tl-wrapper {
+    transform: scale(0.55) !important;
+    transform-origin: top left !important;
+  }
+  .hero-corner-br-wrapper {
+    transform: scale(0.55) !important;
+    transform-origin: bottom right !important;
+  }
+  .hero-photo-container {
+    width: 65vw !important;
+    height: auto !important;
+    bottom: 0 !important;
+  }
+  .hero-photo {
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  .hero-scroll-down {
+    display: none !important;
+  }
+
+  /* ABOUT */
+  .about-section {
+    height: auto !important;
+    min-height: 100vh !important;
+    padding-bottom: 60px !important;
+  }
+  .about-heading-wrap {
+    padding-left: 0px !important; /* Move /ABOUT more to the left */
+    padding-top: 80px !important;
+    margin-bottom: 15px !important;
+    width: 60% !important; 
+  }
+  .about-heading-wrap > div {
+    font-size: 16vw !important; 
+  }
+  .id-card-container {
+    display: flex !important;
+    position: absolute !important;
+    right: 90px !important; /* Shifted exactly ~5% screen width to the right */
+    top: 0 !important;
+    transform: scale(0.50) !important; /* 20% bigger than 0.42 */
+    transform-origin: top center !important;
+    z-index: 5 !important;
+  }
+  .id-card-wire {
+    height: 156px !important; /* 30% longer string on mobile */
+  }
+  .about-content {
+    flex-direction: column !important;
+    padding: 0 20px 20px 20px !important;
+    align-items: flex-start !important;
+  }
+  .about-content > div:first-child {
+    display: none !important; 
+  }
+  .about-bio-text {
+    padding-left: 0 !important;
+    padding-top: 0px !important;
+    width: 100% !important;
+  }
+  .about-bio-text p {
+    width: 58% !important; /* Keep the paragraph clamped for the ID card */
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+    text-align: justify !important;
+  }
+  .about-status-container {
+    margin-bottom: 35px !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+    font-size: 11px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  .about-stats {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 20px 40px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* PROJECTS */
+  .work-vault-heading {
+    top: 0px !important; /* Beside the top light and under the navbar */
+    left: 20px !important;
+    max-width: 40% !important; /* Keep it constrained from hitting the light */
+  }
+  .projects-wall-container {
+    transform: translateX(-50%) scale(0.53) !important; /* Made 10% bigger than 0.48 */
+    bottom: 9vh !important; /* Moved 15% further up from bottom */
+  }
+  .projects-pull-string {
+    right: 20vw !important; /* Move left by roughly 20% of viewport width */
+    transform: scale(0.9) !important; /* Made 40% larger than 0.65 */
+    transform-origin: top center !important; /* Center origin works best when moving off the edge */
+  }
+
+  /* SKILLS */
+  .skills-header {
+    padding-left: 20px !important;
+  }
+  .skills-expertise-text {
+    font-size: 16vw !important;
+  }
+  .torch-wrapper {
+    transform: scale(0.5) !important;
+    transform-origin: bottom left !important;
+    bottom: 80px !important;
+    left: -10px !important;
+  }
+
+  /* CONTACT */
+  .contact-section {
+    padding: 60px 20px !important;
+  }
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .contact-socials-container {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    align-items: center !important;
+  }
+  .contact-socials-container a {
+    padding: 10px 16px !important; /* Shrink padding to comfortably fit side by side */
+    font-size: 11px !important;
+  }
+}

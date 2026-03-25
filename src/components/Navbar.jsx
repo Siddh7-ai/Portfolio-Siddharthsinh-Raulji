@@ -56,7 +56,7 @@ function SRLogo() {
 }
 
 /* ── Magnetic CTA pill ── */
-function MagneticBtn({ children, href, target, rel, download }) {
+function MagneticBtn({ children, href, target, rel, download, onNavClick }) {
   const { triggerLoader } = useLoader()
   const navigate = useNavigate()
   const ref = useRef(null)
@@ -74,6 +74,7 @@ function MagneticBtn({ children, href, target, rel, download }) {
   const onLeave = () => { x.set(0); y.set(0) }
 
   const handleClick = useCallback((e) => {
+    if (onNavClick) onNavClick();
     if (!isSectionLink) return
 
     e.preventDefault()
@@ -149,12 +150,13 @@ function MagneticBtn({ children, href, target, rel, download }) {
 }
 
 /* ── Single nav link ── */
-function NavLink({ label, href, delay }) {
+function NavLink({ label, href, delay, onNavClick }) {
   const { triggerLoader } = useLoader()
   const navigate = useNavigate()
 
   const handleClick = useCallback((e) => {
     e.preventDefault()
+    if (onNavClick) onNavClick();
     const id = href.replace('#','')
     const isOnHomePage = window.location.pathname === '/'
     triggerLoader(() => {
@@ -276,7 +278,15 @@ function SRLogoBtn({ isProjectsPage }) {
 
 export default function Navbar() {
   const [visible, setVisible] = useState(true)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
   const isProjectsPage = window.location.pathname === '/projects'
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     // On /projects page navbar is always visible (no scroll hide)
@@ -293,6 +303,7 @@ export default function Navbar() {
       {visible && (
         <motion.div
           key="navbar"
+          className="nav-outer-wrapper"
           initial={{ opacity: 0, y: -24 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
@@ -308,6 +319,7 @@ export default function Navbar() {
           }}
         >
           <div
+            className="nav-container"
             style={{
               pointerEvents: 'all',
               width: '100%',
@@ -326,15 +338,44 @@ export default function Navbar() {
             {/* Logo + greeting */}
             <SRLogoBtn isProjectsPage={isProjectsPage} />
 
-            {/* Nav links */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {navLinks.map((link, i) => (
-                <NavLink key={link.label} label={link.label} href={link.href} delay={0.22 + i * 0.07} />
-              ))}
-            </div>
+            {/* Hamburger (Mobile Only) */}
+            <button 
+              className="hamburger-btn" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+              style={{ display: 'none', background: 'transparent', border: 'none', cursor: 'pointer', zIndex: 60 }}
+            >
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#111110" strokeWidth="2" strokeLinecap="round">
+                <path d={mobileMenuOpen ? "M18 6L6 18M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              </svg>
+            </button>
 
-            {/* Resume */}
-            <MagneticBtn href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume</MagneticBtn>
+            {/* Nav links */}
+            <AnimatePresence>
+              {(!isMobile || mobileMenuOpen) && (
+                <motion.div 
+                  key="mobile-menu"
+                  className={`nav-links-wrapper ${isMobile ? 'mobile-open' : ''}`} 
+                  initial={isMobile ? { opacity: 0, y: -10, scale: 0.95 } : false}
+                  animate={isMobile ? { opacity: 1, y: 0, scale: 1 } : false}
+                  exit={isMobile ? { opacity: 0, y: -10, scale: 0.95 } : false}
+                  transition={{ duration: 0.2 }}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <div className="nav-links-inner" style={{ display: 'flex', alignItems: 'center' }}>
+                    {navLinks.map((link, i) => (
+                      <NavLink key={link.label} label={link.label} href={link.href} delay={isMobile ? (i * 0.05 + 0.1) : (0.22 + i * 0.07)} onNavClick={() => setMobileMenuOpen(false)} />
+                    ))}
+                  </div>
+                  <motion.div
+                    initial={isMobile ? { opacity: 0, y: -6 } : false}
+                    animate={isMobile ? { opacity: 1, y: 0 } : false}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: isMobile ? (navLinks.length * 0.05 + 0.1) : 0 }}
+                  >
+                    <MagneticBtn href="/resume.pdf" target="_blank" rel="noopener noreferrer" onNavClick={() => setMobileMenuOpen(false)}>Resume</MagneticBtn>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       )}

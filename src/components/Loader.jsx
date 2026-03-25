@@ -13,7 +13,7 @@ export default function Loader() {
   function getSRTargets(w, h, hctx) {
     const size  = Math.min(w, h) * 0.50
     const scale = size / 130
-    const ox    = w / 2 - 65 * scale
+    const ox    = w / 2 - 59 * scale /* shifted from 65 to exactly match the 59 bounds center */
     const oy    = h / 2 - 65 * scale - 20
 
     hctx.clearRect(0, 0, w, h)

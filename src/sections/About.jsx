@@ -115,7 +115,7 @@ function IDCard({ inView }) {
   }
 
   /* Strap SVG — curved bezier from anchor (top) to card clip position */
-  const BASE_STRAP = 150
+  const BASE_STRAP = typeof window !== 'undefined' && window.innerWidth <= 768 ? 195 : 150
   const ax = 0           // anchor x relative to card center
   const ay = 0           // anchor y = top
   const ex = cardX       // card end x (follows spring)
@@ -124,7 +124,7 @@ function IDCard({ inView }) {
   const cpy = ay + (ey - ay) * 0.6
 
   return (
-    <div style={{
+    <div className="id-card-container" style={{
       position: 'absolute', right: '24%', top: 0,
       width: '30px',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -324,6 +324,7 @@ export default function About() {
 
       <section
         id="about"
+        className="about-section"
         ref={ref}
         style={{
           height: '100vh',
@@ -335,10 +336,12 @@ export default function About() {
           boxSizing: 'border-box',
         }}
       >
-        <IDCard inView={inView} />
+        <div className="id-card-wrap">
+          <IDCard inView={inView} />
+        </div>
 
         {/* /ABOUT heading */}
-        <div style={{ overflow: 'hidden', flexShrink: 0, lineHeight: 0 }}>
+        <div className="about-heading-wrap" style={{ overflow: 'hidden', flexShrink: 0, lineHeight: 0 }}>
           <motion.div
             initial={{ y: '105%' }}
             animate={inView ? { y: '0%' } : { y: '105%' }}
@@ -354,7 +357,7 @@ export default function About() {
         </div>
 
         {/* Arrow + Bio */}
-        <div style={{
+        <div className="about-content" style={{
           flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center',
           padding: '0 48px 24px 40px', gap: 0, minHeight: 0, overflow: 'hidden',
         }}>
@@ -374,7 +377,7 @@ export default function About() {
           </motion.div>
 
           {/* Bio */}
-          <div style={{ paddingTop: '0px', paddingLeft: '40px' }}>
+          <div className="about-bio-text" style={{ paddingTop: '0px', paddingLeft: '40px' }}>
 
             {/* Typing bio */}
             <motion.p
@@ -396,6 +399,7 @@ export default function About() {
 
             {/* Status */}
             <motion.div
+              className="about-status-container" /* NEW */
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ delay: 0.45 }}
@@ -420,6 +424,7 @@ export default function About() {
 
             {/* Stats */}
             <motion.div
+              className="about-stats"
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}

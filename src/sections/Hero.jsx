@@ -166,6 +166,7 @@ function BottomRightDots() {
 function ScrollDown({ fadeOut }) {
   return (
     <motion.div
+      className="hero-scroll-down" /* NEW */
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay: 1.8 }}
@@ -286,15 +287,21 @@ export default function Hero() {
       }}>
 
       {/* ── TOP-LEFT circle ── */}
-      <TopLeftCircle />
-      <TopLeftDots />
+      <div className="hero-corner-tl-wrapper" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+        <TopLeftCircle />
+        <TopLeftDots />
+      </div>
 
       {/* ── BOTTOM-RIGHT circle ── */}
-      <BottomRightCircle />
-      <BottomRightDots />
+      <div className="hero-corner-br-wrapper" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+        <BottomRightCircle />
+        <BottomRightDots />
+      </div>
 
       {/* ── FREELANCE TEXT — zIndex 10, above name, below photo ── */}
-      <FreelanceText line1={line1} line2={line2} />
+      <div className="hero-freelance" style={{ position: 'relative', zIndex: 10 }}>
+        <FreelanceText line1={line1} line2={line2} />
+      </div>
 
       {/* ── SCROLL DOWN ── */}
       <ScrollDown fadeOut={fadeOut} />
@@ -320,10 +327,10 @@ export default function Hero() {
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         >
           <Marquee duration={14}>
-            <span style={NAME_STYLE}>RAULJI</span>
-            <NameGap />
-            <span style={NAME_STYLE}>SIDDHARTHSINH</span>
-            <NameGap />
+            <span className="hero-marquee" style={NAME_STYLE}>RAULJI</span>
+            <div className="hero-marquee-gap" style={{ display: 'contents' }}><NameGap /></div>
+            <span className="hero-marquee" style={NAME_STYLE}>SIDDHARTHSINH</span>
+            <div className="hero-marquee-gap" style={{ display: 'contents' }}><NameGap /></div>
           </Marquee>
         </motion.div>
       </motion.div>
@@ -332,6 +339,7 @@ export default function Hero() {
 
       {/* ── PHOTO — outside overflow:hidden, zIndex 5 beats Navbar zIndex 4 ── */}
       <motion.div
+        className="hero-photo-container"
         style={{
           position: 'absolute',
           bottom: 0,
@@ -350,6 +358,7 @@ export default function Hero() {
         transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
       >
         <img
+          className="hero-photo"
           src="/photo.png"
           alt="Siddharthsinh Raulji"
           style={{
