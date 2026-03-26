@@ -3,6 +3,15 @@ import { useLoader } from '../context/LoaderContext'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
 export default function Cursor() {
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   const { visible: loaderVisible } = useLoader()
   const [hovered, setHovered] = useState(false)
   const [onDark, setOnDark]   = useState(false)
@@ -76,6 +85,8 @@ export default function Cursor() {
   /* Color switches: white on dark bg, black on light bg */
   const dotColor  = onDark ? '#ffffff' : '#111110'
   const ringColor = onDark ? 'rgba(255,255,255,0.35)' : 'rgba(17,17,16,0.25)'
+
+  if (isMobile) return null
 
   return (
     <>

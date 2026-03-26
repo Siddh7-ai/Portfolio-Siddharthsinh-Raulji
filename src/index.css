@@ -190,7 +190,7 @@
     width: 10px !important;
   }
   .hero-corner-tl-wrapper {
-    transform: scale(0.55) !important;
+    transform: scale(0.66) !important;
     transform-origin: top left !important;
   }
   .hero-corner-br-wrapper {
@@ -254,7 +254,7 @@
     width: 58% !important; /* Keep the paragraph clamped for the ID card */
     font-size: 13px !important;
     line-height: 1.65 !important;
-    text-align: justify !important;
+    text-align: left !important;
   }
   .about-status-container {
     margin-bottom: 35px !important;
@@ -292,13 +292,13 @@
 
   /* SKILLS */
   .skills-header {
-    padding-left: 20px !important;
+    padding-left: 10px !important;
   }
   .skills-expertise-text {
     font-size: 16vw !important;
   }
   .torch-wrapper {
-    transform: scale(0.5) !important;
+    transform: scale(0.625) !important;
     transform-origin: bottom left !important;
     bottom: 80px !important;
     left: -10px !important;
@@ -319,7 +319,7 @@
     align-items: center !important;
   }
   .contact-socials-container a {
-    padding: 10px 16px !important; /* Shrink padding to comfortably fit side by side */
-    font-size: 11px !important;
+    padding: 8px 14px !important; /* Reduced from 10px 16px */
+    font-size: 9.5px !important; /* Reduced from 11px */
   }
 }

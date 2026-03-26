@@ -5,42 +5,56 @@ import { useLoader } from '../context/LoaderContext'
 
 const projects = [
   {
-    number: '01', title: 'PhishGuard Ai ', category: 'Full Stack · Security · ML model',
-    desc: 'Built an AI-powered phishing detection system to analyze URLs and web content, enabling real-time identification of malicious websites. \n\n Developed a browser extension to provide instant alerts and protect users from phishing attacks during web browsing.',
+    number: '01',
+    title: 'PhishGuard AI',
+    category: 'Full Stack · Security · ML Model',
+    desc: 'AI-powered phishing detection system identifying malicious URLs in real time, integrated with a browser extension to deliver instant alerts and improve browsing safety.',
     tags: ['React', 'JavaScript', 'Python', 'Machine Learning', 'Browser Extension'],
     imageUrl: '/projects/project-01.png',
     liveUrl: 'https://phish-guard-ai-lac.vercel.app/',
     gitHubUrl: 'https://github.com/Siddh7-ai/PhishGuardAi',
   },
+
   {
-    number: '02', title: 'AxCrypt', category: 'Cybersecurity · Python',
-    desc: 'Developed a Python-based secure file encryption system with time-controlled access and automatic re-encryption to ensure data confidentiality. Designed a modular application with GUI, secure file sharing, user management, and activity logging for efficient and controlled file operations.',
+    number: '02',
+    title: 'AxCrypt',
+    category: 'Cybersecurity · Python',
+    desc: 'Developed a secure file encryption system with time-based access control and automatic re-encryption, ensuring controlled and confidential file sharing.',
     tags: ['Python', 'Cryptography', 'File Encryption'],
     imageUrl: '/projects/project-02.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/AxCrypt',
   },
+
   {
-    number: '03', title: 'EduLearn', category: 'EduTech · AI-Based Learning Platform',
-    desc: 'AI-powered learning platform that personalizes study materials based on student performance and progress. Features smart recommendations, analytics dashboard, and goal tracking to enhance learning efficiency and outcomes.',
+    number: '03',
+    title: 'EduLearn',
+    category: 'EdTech · AI-Based Learning Platform',
+    desc: 'AI-driven learning platform that personalizes study content based on student performance, delivering smart recommendations and progress tracking for improved outcomes.',
     tags: ['HTML', 'CSS', 'JavaScript'],
     imageUrl: '/projects/project-03.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/EduLearn',
   },
+
   {
-    number: '04', title: 'ShieldNet', category: 'Security · Encryption',
-    desc: 'ShieldNet is an AI-powered home WiFi security tool that scans nearby networks and connected devices to find common vulnerabilities like open WiFi, weak encryption, WPS risks, and suspicious devices. It calculates a clear security score with grade-based insights, then gives personalized recommendations so non-technical users can improve their network safety quickly. The project includes a Flask backend, interactive web dashboard, and PDF report generation for easy monitoring and sharing of home network security status.',
-    tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'Vulnerability Assessment', 'REST API', 'ReportLab'],
+    number: '04',
+    title: 'ShieldNet',
+    category: 'Security · Network Protection',
+    desc: 'AI-powered WiFi security scanner that detects vulnerabilities in networks and connected devices, providing security scores and actionable insights for safer home networks.',
+    tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'REST API'],
     imageUrl: '/projects/project-04.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/ShieldNet',
   },
+
   {
-    number: '05', title: 'CoreInventory', category: 'Productivity · UI/UX · Full Stack · Delivery Management',
-    desc: 'CoreInventory is a role-based warehouse inventory management dashboard built with React, Vite, and Tailwind CSS, featuring Manager and Staff views for tracking products, receipts, deliveries, transfers, and stock adjustments.',
+    number: '05',
+    title: 'CoreInventory',
+    category: 'Full Stack · Inventory Management',
+    desc: 'Role-based inventory management system with real-time tracking of products, deliveries, and stock operations, designed to streamline warehouse workflows.',
     tags: ['React', 'Node.js', 'Prisma', 'Tailwind'],
     imageUrl: '/projects/project-05.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/CoreInventory/tree/frontend',
   },
-]
+];
 
 const PIN_COLORS = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6']
 
@@ -400,6 +414,15 @@ function WorkVaultHeading({ revealed }) {
 }
 
 function Content({ revealed, expanded, setExpanded, isLightOn }) {
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   return (
     <>
       <WorkVaultHeading revealed={revealed} />
@@ -420,21 +443,27 @@ function Content({ revealed, expanded, setExpanded, isLightOn }) {
             style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(10px)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <motion.div initial={{ scale: 0.88, opacity: 0, y: 30 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.92, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              style={{ background: '#f0ebd8', padding: 40, borderRadius: 8, maxWidth: 600, width: '90%' }}
+              style={{ 
+                background: '#f0ebd8', 
+                padding: isMobile ? 24 : 40, 
+                borderRadius: 8, 
+                maxWidth: isMobile ? 420 : 600, 
+                width: isMobile ? '82%' : '90%' 
+              }}
               onClick={e => e.stopPropagation()}>
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 8 }}>PROJECT {expanded.number} — {expanded.year}</p>
-              <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 48, color: '#111', lineHeight: 1 }}>{expanded.title}</h2>
+              <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? 36 : 48, color: '#111', lineHeight: 1 }}>{expanded.title}</h2>
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'rgba(17,17,17,0.45)', marginTop: 4, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{expanded.category}</p>
-              <img src={expanded.imageUrl} alt={expanded.title} style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 4, marginTop: 16, filter: 'brightness(0.9) contrast(1.1) sepia(0.1)' }} />
-              <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#555', marginTop: 14, lineHeight: 1.75, fontSize: 14 }}>{expanded.desc}</p>
+              <img src={expanded.imageUrl} alt={expanded.title} style={{ width: '100%', height: isMobile ? 160 : 200, objectFit: 'cover', borderRadius: 4, marginTop: 16, filter: 'brightness(0.9) contrast(1.1) sepia(0.1)' }} />
+              <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#555', marginTop: 14, lineHeight: 1.75, fontSize: isMobile ? 12 : 14 }}>{expanded.desc}</p>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 20 }}>
-                {expanded.tags.map(t => <span key={t} style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, padding: '4px 10px', border: '1px solid rgba(17,17,17,0.22)', borderRadius: 12, color: '#333' }}>{t}</span>)}
+                {expanded.tags.map(t => <span key={t} style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, padding: '4px 10px', border: '1px solid rgba(17,17,17,0.22)', borderRadius: 12, color: '#333' }}>{t}</span>)}
               </div>
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 24 }}>
                 {expanded.liveUrl && (
-                  <a href={expanded.liveUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 10, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW LIVE ↗</a>
+                  <a href={expanded.liveUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 9, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW LIVE ↗</a>
                 )}
-                <a href={expanded.gitHubUrl || expanded.gitHubUrlUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 10, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW ON GITHUB ↗</a>
+                <a href={expanded.gitHubUrl || expanded.gitHubUrlUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 9, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW ON GITHUB ↗</a>
               </div>
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 8, color: 'rgba(17,17,17,0.28)', marginTop: 22, letterSpacing: '0.1em' }}>CLICK OUTSIDE TO CLOSE</p>
             </motion.div>

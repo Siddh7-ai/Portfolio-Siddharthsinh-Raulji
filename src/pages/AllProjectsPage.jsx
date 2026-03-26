@@ -6,42 +6,61 @@ import Navbar from '../components/Navbar'
 
 const allProjects = [
   {
-    number: '01', title: 'PhishGuard Ai', category: 'Full Stack · Security · ML model',
-    desc: 'Built an AI-powered phishing detection system to analyze URLs and web content, enabling real-time identification of malicious websites. Developed a browser extension to provide instant alerts and protect users from phishing attacks during web browsing.',
-    tags: ['React', 'JavaScript', 'Python', 'Machine Learning', 'Browser Extension'], year: '2025',
+    number: '01',
+    title: 'PhishGuard AI',
+    category: 'Full Stack · Security · ML Model',
+    desc: 'Engineered an AI-powered phishing detection system that analyzes URLs and web content in real time to identify malicious websites. Integrated a browser extension that delivers instant alerts and actively protects users during browsing, improving overall web security and threat awareness.',
+    tags: ['React', 'JavaScript', 'Python', 'Machine Learning', 'Browser Extension'],
+    year: '2025',
     imageUrl: '/projects/project-01.png',
     liveUrl: 'https://phish-guard-ai-lac.vercel.app/',
     demoUrl: 'https://github.com/Siddh7-ai/PhishGuardAi',
   },
+
   {
-    number: '02', title: 'AxCrypt', category: 'Cybersecurity · Python',
-    desc: 'Developed a Python-based secure file encryption system with time-controlled access and automatic re-encryption to ensure data confidentiality. Designed a modular application with GUI, secure file sharing, user management, and activity logging for efficient and controlled file operations.',
-    tags: ['Python', 'Cryptography', 'File Encryption'], year: '2025',
+    number: '02',
+    title: 'AxCrypt',
+    category: 'Cybersecurity · Python',
+    desc: 'Built a secure file encryption system with time-based access control and automatic re-encryption to ensure data confidentiality. Designed a modular architecture with GUI support, enabling controlled file sharing, user management, and secure handling of sensitive data.',
+    tags: ['Python', 'Cryptography', 'File Encryption'],
+    year: '2025',
     imageUrl: '/projects/project-02.png',
     demoUrl: 'https://github.com/Siddh7-ai/AxCrypt',
   },
+
   {
-    number: '03', title: 'EduLearn', category: 'EduTech · AI-Based Learning Platform',
-    desc: 'AI-powered learning platform that personalizes study materials based on student performance and progress. Features smart recommendations, analytics dashboard, and goal tracking to enhance learning efficiency and outcomes.',
-    tags: ['HTML', 'CSS', 'JavaScript'], year: '2025',
+    number: '03',
+    title: 'EduLearn',
+    category: 'EdTech · AI-Based Learning Platform',
+    desc: 'Developed an AI-driven learning platform that personalizes study materials based on student performance and progress. Implemented smart recommendations, analytics tracking, and goal-based learning features to improve engagement and learning efficiency.',
+    tags: ['HTML', 'CSS', 'JavaScript'],
+    year: '2025',
     imageUrl: '/projects/project-03.png',
     demoUrl: 'https://github.com/Siddh7-ai/EduLearn',
   },
+
   {
-    number: '04', title: 'ShieldNet', category: 'Security · Encryption',
-    desc: 'ShieldNet is an AI-powered home WiFi security tool that scans nearby networks and connected devices to find common vulnerabilities like open WiFi, weak encryption, WPS risks, and suspicious devices. It calculates a clear security score with grade-based insights, then gives personalized recommendations so non-technical users can improve their network safety quickly. The project includes a Flask backend, interactive web dashboard, and PDF report generation for easy monitoring and sharing of home network security status.',
-    tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'Vulnerability Assessment', 'REST API', 'ReportLab'], year: '2025',
+    number: '04',
+    title: 'ShieldNet',
+    category: 'Security · Network Protection',
+    desc: 'Created an AI-powered WiFi security tool that scans nearby networks and connected devices to detect vulnerabilities such as weak encryption, open networks, and suspicious connections. Generates security scores with actionable insights and provides an interactive dashboard with report generation for easy monitoring.',
+    tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'REST API'],
+    year: '2025',
     imageUrl: '/projects/project-04.png',
     demoUrl: 'https://github.com/Siddh7-ai/ShieldNet',
   },
+
   {
-    number: '05', title: 'CoreInventory', category: 'Productivity · UI/UX · Full Stack · Delivery Management',
-    desc: 'CoreInventory is a role-based warehouse inventory management dashboard built with React, Vite, and Tailwind CSS, featuring Manager and Staff views for tracking products, receipts, deliveries, transfers, and stock adjustments.',
-    tags: ['React', 'Node.js', 'Prisma', 'Tailwind'], year: '2025',
+    number: '05',
+    title: 'CoreInventory',
+    category: 'Full Stack · Inventory Management',
+    desc: 'Developed a role-based inventory management system to streamline warehouse operations, including product tracking, deliveries, transfers, and stock adjustments. Designed separate interfaces for managers and staff, improving operational efficiency and data visibility.',
+    tags: ['React', 'Node.js', 'Prisma', 'Tailwind'],
+    year: '2025',
     imageUrl: '/projects/project-05.png',
     demoUrl: 'https://github.com/Siddh7-ai/CoreInventory/tree/frontend',
   },
-]
+];
 
 const container = {
   hidden: {},

@@ -267,15 +267,14 @@ function IDCard({ inView }) {
     </div>
   )
 }
+
 // ── Bio text ──────────────────────────────────────────────────────────────────
-const BIO_TEXT = `"Siddharthsinh Raulji is a passionate Full-Stack Developer & Security Enthusiast, known for his technical depth and design sensibility. With a drive for crafting visually stunning and highly functional digital experiences, Siddharthsinh combines modern web development with cybersecurity knowledge to build products that are both beautiful and secure. Whether it's architecting scalable backends, designing sharp interfaces, or hardening systems — his dedication to excellence and innovation shines through in every project he undertakes."`
+const BIO_TEXT = `I'm Siddharthsinh Raulji, a Full-Stack Developer specializing in secure and scalable web applications. I blend modern development with cybersecurity to build real-world solutions that are both reliable and user-focused. From AI-driven security tools to full-stack systems, I focus on clean architecture, performance, and meaningful problem-solving.`;
 
 // ── Main About Section ────────────────────────────────────────────────────────
 export default function About() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' })
-
-
 
   const [typingStarted, setTypingStarted] = useState(false)
   useEffect(() => {
@@ -358,8 +357,8 @@ export default function About() {
 
         {/* Arrow + Bio */}
         <div className="about-content" style={{
-          flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center',
-          padding: '0 48px 24px 40px', gap: 0, minHeight: 0, overflow: 'hidden',
+          flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start',
+          padding: '80px 48px 24px 40px', gap: 0, minHeight: 0, overflow: 'hidden',
         }}>
           {/* Arrow */}
           <motion.div
@@ -377,7 +376,14 @@ export default function About() {
           </motion.div>
 
           {/* Bio */}
-          <div className="about-bio-text" style={{ paddingTop: '0px', paddingLeft: '40px' }}>
+          <div className="about-bio-text" style={{ 
+            paddingTop: '0px', 
+            paddingLeft: '40px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            textAlign: 'left'
+          }}>
 
             {/* Typing bio */}
             <motion.p
@@ -389,67 +395,78 @@ export default function About() {
                 fontSize: 'clamp(13px, 1.1vw, 16px)',
                 fontWeight: 400, lineHeight: 1.75,
                 color: 'rgba(255,255,255,0.62)',
-                marginBottom: '28px', maxWidth: '500px', minHeight: '8em',
+                marginBottom: '0px', maxWidth: '500px', minHeight: '6em',
               }}
             >
               {displayed}
               {/* Pure CSS blink — no framer-motion easing, no crash */}
               {!done && <span className="_typing_cursor" />}
             </motion.p>
-
-            {/* Status */}
-            <motion.div
-              className="about-status-container" /* NEW */
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ delay: 0.45 }}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px' }}
-            >
-              <motion.span
-                animate={{ opacity: [1, 0.1, 1] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: '#4ade80', flexShrink: 0, display: 'inline-block',
-                }}
-              />
-              <span style={{
-                fontFamily: '"DM Mono", monospace',
-                fontSize: '10px', letterSpacing: '0.16em',
-                textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)',
-              }}>
-                Currently available for freelance &amp; full-time · Vadodara, Gujarat
-              </span>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              className="about-stats"
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
-              style={{ display: 'flex', gap: '40px' }}
-            >
-              {[
-                { num: '15+',  label: 'Projects'  },
-                { num: '10+',  label: 'Hackathon' },
-                { num: '100%', label: 'Dedicated' },
-              ].map(s => (
-                <div key={s.label}>
-                  <div style={{
-                    fontFamily: '"Bebas Neue", cursive', fontSize: '38px',
-                    lineHeight: 1, color: '#fff', letterSpacing: '0.01em',
-                  }}>{s.num}</div>
-                  <div style={{
-                    fontFamily: '"DM Mono", monospace', fontSize: '9px',
-                    letterSpacing: '0.2em', textTransform: 'uppercase',
-                    color: 'rgba(255,255,255,0.22)', marginTop: 5,
-                  }}>{s.label}</div>
-                </div>
-              ))}
-            </motion.div>
-
           </div>
+        </div>
+
+        {/* Status + Stats moved to bottom */}
+        <div className="about-footer-info" style={{
+          marginTop: 'auto',
+          padding: '0 40px 48px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '32px',
+          flexShrink: 0
+        }}>
+          {/* Status */}
+          <motion.div
+            className="about-status-container"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 0.45 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+          >
+            <motion.span
+              animate={{ opacity: [1, 0.1, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: 6, height: 6, borderRadius: '50%',
+                background: '#4ade80', flexShrink: 0, display: 'inline-block',
+              }}
+            />
+            <span style={{
+              fontFamily: '"DM Mono", monospace',
+              fontSize: '10px', letterSpacing: '0.16em',
+              textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)',
+              textAlign: 'center'
+            }}>
+              Currently available for freelance &amp; full-time · Vadodara, Gujarat
+            </span>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            className="about-stats"
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
+            style={{ display: 'flex', gap: '48px', justifyContent: 'center' }}
+          >
+            {[
+              { num: '15+',  label: 'Projects'  },
+              { num: '10+',  label: 'Hackathon' },
+              { num: '100%', label: 'Dedicated' },
+            ].map(s => (
+              <div key={s.label} style={{ textAlign: 'center' }}>
+                <div style={{
+                  fontFamily: '"Bebas Neue", cursive', fontSize: '38px',
+                  lineHeight: 1, color: '#fff', letterSpacing: '0.01em',
+                }}>{s.num}</div>
+                <div style={{
+                  fontFamily: '"DM Mono", monospace', fontSize: '9px',
+                  letterSpacing: '0.2em', textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.22)', marginTop: 5,
+                }}>{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
     </>

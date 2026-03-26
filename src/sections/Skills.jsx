@@ -774,7 +774,7 @@ export default function MagneticSkills() {
       }} />
 
       {/* ── Header ── */}
-      <div style={{
+      <div className="skills-header" style={{
         position: 'absolute', top: 0, left: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
         paddingTop: 36, paddingLeft: 40, zIndex: 40, pointerEvents: 'none',
