@@ -228,7 +228,7 @@
   .id-card-container {
     display: flex !important;
     position: absolute !important;
-    right: 90px !important; /* Shifted exactly ~5% screen width to the right */
+    right: 50px !important; /* Shifted slightly right */
     top: 0 !important;
     transform: scale(0.50) !important; /* 20% bigger than 0.42 */
     transform-origin: top center !important;

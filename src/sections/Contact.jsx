@@ -154,7 +154,7 @@ export default function Contact() {
             className="space-y-4"
           >
             {[
-              { label: 'Email',    value: 'siddharthraulji5@email.com' },
+              { label: 'Gmail',    value: 'siddharthraulji5@gmail.com' },
               { label: 'Location', value: 'Vadodara, Gujarat, India' },
               { label: 'Status',   value: 'Available for freelance' },
             ].map(item => (
