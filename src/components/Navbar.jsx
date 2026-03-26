@@ -21,7 +21,6 @@ function SRLogo() {
       fill="none"
       style={{ flexShrink: 0, display: 'block' }}
     >
-      {/* S — two arcs, #111110 */}
       <path
         d="M58 22 A28 22 0 0 0 14 44 A28 22 0 0 1 58 66 A28 22 0 0 1 14 88"
         fill="none"
@@ -29,14 +28,12 @@ function SRLogo() {
         strokeWidth="8"
         strokeLinecap="round"
       />
-      {/* R — vertical stem */}
       <line
         x1="74" y1="22" x2="74" y2="110"
         stroke="#111110"
         strokeWidth="8"
         strokeLinecap="round"
       />
-      {/* R — bump arc */}
       <path
         d="M74 22 Q104 22 104 44 Q104 66 74 66"
         fill="none"
@@ -44,7 +41,6 @@ function SRLogo() {
         strokeWidth="8"
         strokeLinecap="round"
       />
-      {/* R — diagonal leg */}
       <line
         x1="74" y1="66" x2="104" y2="110"
         stroke="#111110"
@@ -94,7 +90,7 @@ function MagneticBtn({ children, href, target, rel, download, onNavClick }) {
         else window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     })
-  }, [href, isSectionLink, navigate, triggerLoader])
+  }, [href, isSectionLink, navigate, triggerLoader, onNavClick])
 
   return (
     <motion.a
@@ -163,7 +159,6 @@ function NavLink({ label, href, delay, onNavClick }) {
     const isOnHomePage = window.location.pathname === '/'
     triggerLoader(() => {
       if (!isOnHomePage) {
-        /* Navigate to home first, then scroll to section */
         navigate('/')
         setTimeout(() => {
           const el = document.getElementById(id)
@@ -175,7 +170,7 @@ function NavLink({ label, href, delay, onNavClick }) {
         else window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     })
-  }, [href, triggerLoader, navigate])
+  }, [href, triggerLoader, navigate, onNavClick])
 
   return (
     <motion.a
@@ -193,8 +188,9 @@ function NavLink({ label, href, delay, onNavClick }) {
         textTransform: 'uppercase',
         color: '#111110',
         textDecoration: 'none',
-        padding: '4px 10px',
+        padding: '10px',
         cursor: 'none',
+        display: 'block',
       }}
     >
       {label}
@@ -234,7 +230,6 @@ function WavingHand() {
     </motion.span>
   )
 }
-
 
 function SRLogoBtn({ isProjectsPage }) {
   const { triggerLoader } = useLoader()
@@ -291,7 +286,6 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => {
-    // On /projects page navbar is always visible (no scroll hide)
     if (isProjectsPage) { setVisible(true); return }
     const onScroll = () => {
       setVisible(window.scrollY < window.innerHeight * 0.8)
@@ -316,84 +310,94 @@ export default function Navbar() {
             zIndex: 3,
             display: 'flex',
             justifyContent: 'center',
-            padding: '10px 24px',
+            padding: isMobile ? '10px 16px' : '10px 24px',
             pointerEvents: 'none',
           }}
         >
-            <div
-              className="nav-container"
-              style={{
-                pointerEvents: 'all',
-                width: '100%',
-                maxWidth: '900px',
-                height: '52px',
-                background: '#ffffff',
-                borderRadius: '100px',
-                border: '1px solid rgba(17,17,16,0.10)',
-                boxShadow: '0 2px 24px rgba(17,17,16,0.07)',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 12px 0 14px',
-              }}
-            >
-              {/* Column 1: Logo (Left 25%) */}
-              <div style={{ flex: '0 0 25%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center', minWidth: 0 }}>
+          <motion.div 
+            layout
+            className="nav-container"
+            style={{
+              pointerEvents: 'all',
+              width: '100%',
+              maxWidth: '900px',
+              height: 'auto',
+              minHeight: '52px',
+              background: '#ffffff',
+              borderRadius: '26px',
+              border: '1px solid rgba(17,17,16,0.10)',
+              boxShadow: '0 2px 24px rgba(17,17,16,0.07)',
+              display: 'flex',
+              flexDirection: 'column',
+              padding: isMobile ? '8px 14px' : '0 12px 0 14px',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Main Header Row */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              width: '100%',
+              height: '52px'
+            }}>
+              {/* Logo Column */}
+              <div style={{ flex: isMobile ? '0 0 auto' : '0 0 25%', display: 'flex', alignItems: 'center' }}>
                 <SRLogoBtn isProjectsPage={isProjectsPage} />
               </div>
 
-              {/* Hamburger (Mobile Only) */}
-              <button 
-                className="hamburger-btn" 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-                style={{ display: 'none', background: 'transparent', border: 'none', cursor: 'pointer', zIndex: 60 }}
-              >
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#111110" strokeWidth="2" strokeLinecap="round">
-                  <path d={mobileMenuOpen ? "M18 6L6 18M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-                </svg>
-              </button>
+              {/* Desktop Centered Links */}
+              {!isMobile && (
+                <div style={{ flex: '0 0 50%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {navLinks.map((link, i) => (
+                      <NavLink key={link.label} label={link.label} href={link.href} delay={0.22 + i * 0.07} />
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              {/* Column 2: Centered Links (Middle 50%) */}
-              <AnimatePresence>
-                {(!isMobile || mobileMenuOpen) && (
-                  <motion.div 
-                    key="mobile-menu"
-                    className={`nav-links-wrapper ${isMobile ? 'mobile-open' : ''}`} 
-                    initial={isMobile ? { opacity: 0, y: -10, scale: 0.95 } : false}
-                    animate={isMobile ? { opacity: 1, y: 0, scale: 1 } : false}
-                    exit={isMobile ? { opacity: 0, y: -10, scale: 0.95 } : false}
-                    transition={{ duration: 0.2 }}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flex: isMobile ? 'none' : '0 0 50%', /* Explicitly 50% for perfect centering */
-                    }}
-                  >
-                    <div className="nav-links-inner" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      {navLinks.map((link, i) => (
-                        <NavLink key={link.label} label={link.label} href={link.href} delay={isMobile ? (i * 0.05 + 0.1) : (0.22 + i * 0.07)} onNavClick={() => setMobileMenuOpen(false)} />
-                      ))}
-                    </div>
-                  </motion.div>
+              {/* Right Column: Resume (Desktop) / Hamburger (Mobile) */}
+              <div style={{ flex: isMobile ? '0 0 auto' : '0 0 25%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                {!isMobile && (
+                  <MagneticBtn href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume</MagneticBtn>
                 )}
-              </AnimatePresence>
-
-              {/* Column 3: Resume (Right 25%) */}
-              <div style={{ flex: '0 0 25%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minWidth: 0 }}>
-                <AnimatePresence>
-                  {(!isMobile || mobileMenuOpen) && (
-                    <motion.div
-                      initial={isMobile ? { opacity: 0, y: -6 } : false}
-                      animate={isMobile ? { opacity: 1, y: 0 } : false}
-                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: isMobile ? (navLinks.length * 0.05 + 0.1) : 0 }}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <MagneticBtn href="/resume.pdf" target="_blank" rel="noopener noreferrer" onNavClick={() => setMobileMenuOpen(false)}>Resume</MagneticBtn>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                
+                {isMobile && (
+                  <button 
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+                    style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '8px' }}
+                  >
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#111110" strokeWidth="2.5" strokeLinecap="round">
+                      <path d={mobileMenuOpen ? "M18 6L6 18M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
+
+            {/* Mobile Menu Expansion */}
+            <AnimatePresence>
+              {isMobile && mobileMenuOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ width: '100%' }}
+                >
+                  <div style={{ padding: '20px 0 10px 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {navLinks.map((link, i) => (
+                      <NavLink key={link.label} label={link.label} href={link.href} delay={i * 0.08} onNavClick={() => setMobileMenuOpen(false)} />
+                    ))}
+                    <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(17,17,16,0.05)' }}>
+                       <MagneticBtn href="/resume.pdf" target="_blank" rel="noopener noreferrer" onNavClick={() => setMobileMenuOpen(false)}>Resume</MagneticBtn>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

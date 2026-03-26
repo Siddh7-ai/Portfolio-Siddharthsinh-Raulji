@@ -412,8 +412,6 @@ const TECHS = [
   { name: 'NumPy',        icon: 'numpy',        color: '#4DABCF', orbit: 2 },
 ]
 
-const ORBIT_R_FRAC = [0.22, 0.42, 0.62]
-const BASE_SIZE    = [50, 43, 37]
 const ORBIT_CX_FRAC = 0.62
 const ORBIT_CY_FRAC = 0.50
 
@@ -551,12 +549,19 @@ export default function MagneticSkills() {
 
 
   const [iconStates, setIconStates] = useState(() =>
-    TECHS.map((_, i) => ({ x: 0, y: 0, size: BASE_SIZE[TECHS[i].orbit], opacity: 0.6 }))
+    TECHS.map((_, i) => ({ x: 0, y: 0, size: [50, 43, 37][TECHS[i].orbit], opacity: 0.6 }))
   )
   const [orbitCenter, setOrbitCenter] = useState({ x: 0, y: 0 })
   const [tooltip, setTooltip]         = useState(null)
   const [torchOn, setTorchOn]         = useState(true)
   const [torchPhase, setTorchPhase]   = useState(0)
+  const [isMobile, setIsMobile]       = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const torchOnRef  = useRef(true)
   const mouseRef    = useRef({ x: -9999, y: -9999 })
@@ -649,8 +654,10 @@ export default function MagneticSkills() {
       const newStates = TECHS.map((tech, i) => {
         const p = ANIM[i]
         const halfMin = Math.min(w, h) / 2
-        const orbitR  = halfMin * ORBIT_R_FRAC[tech.orbit]
-        const baseSize = BASE_SIZE[tech.orbit]
+        const orbitRFrac = isMobile ? [0.27, 0.50, 0.76] : [0.22, 0.42, 0.62]
+        const baseSizes  = isMobile ? [44, 38, 32] : [50, 43, 37]
+        const orbitR  = halfMin * orbitRFrac[tech.orbit]
+        const baseSize = baseSizes[tech.orbit]
 
         let x = cx + Math.cos(p.angle) * orbitR
         let y = cy + Math.sin(p.angle) * orbitR
