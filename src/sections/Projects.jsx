@@ -485,7 +485,10 @@ export default function Projects() {
   const [hoverBtn, setHoverBtn] = useState(false)
 
   const handleViewAll = useCallback(() => {
-    triggerLoader(() => navigate('/projects'), 'magic')
+    triggerLoader(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      navigate('/projects');
+    }, 'magic')
   }, [triggerLoader, navigate])
 
   useEffect(() => {

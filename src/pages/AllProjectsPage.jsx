@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLoader } from '../context/LoaderContext'
@@ -71,9 +71,23 @@ export default function AllProjectsPage() {
   const { triggerLoader } = useLoader()
   const [hovered, setHovered] = useState(null)
 
+  useLayoutEffect(() => {
+    // Instant reset at start of render
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  }, []);
+
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    // Multi-stage reset for mobile browsers and loader transitions
+    window.scrollTo(0, 0);
+    const timers = [
+      setTimeout(() => window.scrollTo(0, 0), 0),
+      setTimeout(() => window.scrollTo(0, 0), 100),
+      setTimeout(() => window.scrollTo(0, 0), 500),
+    ];
+    return () => timers.forEach(t => clearTimeout(t));
+  }, []);
 
   const goHome = useCallback(() => {
     triggerLoader(() => {

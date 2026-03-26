@@ -26,6 +26,10 @@ export function LoaderProvider({ children }) {
       callbackRef.current()
       callbackRef.current = null
     }
+    // Force instant scroll-to-top on route reveal
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 10);
   }, [])
 
   return (
