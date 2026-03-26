@@ -269,10 +269,19 @@ function IDCard({ inView }) {
 }
 
 // ── Bio text ──────────────────────────────────────────────────────────────────
-const BIO_TEXT = `I'm Siddharthsinh Raulji, a Full-Stack Developer specializing in secure and scalable web applications. I blend modern development with cybersecurity to build real-world solutions that are both reliable and user-focused. From AI-driven security tools to full-stack systems, I focus on clean architecture, performance, and meaningful problem-solving.`;
+const BIO_TEXT = `I'm Siddharthsinh Raulji, a Full-Stack Developer specializing in secure and scalable web applications. I blend modern development with cybersecurity to build real-world solutions that are both reliable and user-focused. From AI-driven security tools to full-stack systems, I focus on clean architecture, performance, and meaningful problem-solving, alongside my B.Tech in Computer Engineering.`;
 
 // ── Main About Section ────────────────────────────────────────────────────────
 export default function About() {
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' })
 
@@ -311,14 +320,6 @@ export default function About() {
           100% { transform: rotate(0deg); }
         }
       `}
-          display: inline-block;
-          width: 2px;
-          height: 1em;
-          background: rgba(255,255,255,0.7);
-          margin-left: 2px;
-          vertical-align: text-bottom;
-          border-radius: 1px;
-          animation: _cur_blink 0.7s infinite;
       </style>
 
       <section
@@ -402,73 +403,91 @@ export default function About() {
               {/* Pure CSS blink — no framer-motion easing, no crash */}
               {!done && <span className="_typing_cursor" />}
             </motion.p>
+
+            {/* Desktop Status + Stats: under bio, left-aligned */}
+            {!isMobile && (
+              <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'flex-start' }}>
+                <StatusBlock inView={inView} />
+                <StatsBlock inView={inView} />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Status + Stats moved to bottom */}
-        <div className="about-footer-info" style={{
-          marginTop: 'auto',
-          padding: '0 40px 48px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '32px',
-          flexShrink: 0
-        }}>
-          {/* Status */}
-          <motion.div
-            className="about-status-container"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ delay: 0.45 }}
-            style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-          >
-            <motion.span
-              animate={{ opacity: [1, 0.1, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-              style={{
-                width: 6, height: 6, borderRadius: '50%',
-                background: '#4ade80', flexShrink: 0, display: 'inline-block',
-              }}
-            />
-            <span style={{
-              fontFamily: '"DM Mono", monospace',
-              fontSize: '10px', letterSpacing: '0.16em',
-              textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)',
-              textAlign: 'center'
-            }}>
-              Currently available for freelance &amp; full-time · Vadodara, Gujarat
-            </span>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            className="about-stats"
-            initial={{ opacity: 0, y: 12 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
-            style={{ display: 'flex', gap: '48px', justifyContent: 'center' }}
-          >
-            {[
-              { num: '15+',  label: 'Projects'  },
-              { num: '10+',  label: 'Hackathon' },
-              { num: '100%', label: 'Dedicated' },
-            ].map(s => (
-              <div key={s.label} style={{ textAlign: 'center' }}>
-                <div style={{
-                  fontFamily: '"Bebas Neue", cursive', fontSize: '38px',
-                  lineHeight: 1, color: '#fff', letterSpacing: '0.01em',
-                }}>{s.num}</div>
-                <div style={{
-                  fontFamily: '"DM Mono", monospace', fontSize: '9px',
-                  letterSpacing: '0.2em', textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.22)', marginTop: 5,
-                }}>{s.label}</div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
+        {/* Mobile Status + Stats: at bottom, centered */}
+        {isMobile && (
+          <div className="about-footer-info" style={{
+            marginTop: 'auto',
+            padding: '0 40px 48px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '32px',
+            flexShrink: 0
+          }}>
+            <StatusBlock inView={inView} />
+            <StatsBlock inView={inView} />
+          </div>
+        )}
       </section>
     </>
+  )
+}
+
+function StatusBlock({ inView }) {
+  return (
+    <motion.div
+      className="about-status-container"
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ delay: 0.45 }}
+      style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+    >
+      <motion.span
+        animate={{ opacity: [1, 0.1, 1] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        style={{
+          width: 6, height: 6, borderRadius: '50%',
+          background: '#4ade80', flexShrink: 0, display: 'inline-block',
+        }}
+      />
+      <span style={{
+        fontFamily: '"DM Mono", monospace',
+        fontSize: '10px', letterSpacing: '0.16em',
+        textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)',
+      }}>
+        Currently available for freelance · Vadodara, Gujarat
+      </span>
+    </motion.div>
+  )
+}
+
+function StatsBlock({ inView }) {
+  return (
+    <motion.div
+      className="about-stats"
+      initial={{ opacity: 0, y: 12 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
+      style={{ display: 'flex', gap: '48px' }}
+    >
+      {[
+        { num: '15+',  label: 'Projects'  },
+        { num: '10+',  label: 'Hackathon' },
+        { num: '100%', label: 'Dedicated' },
+      ].map(s => (
+        <div key={s.label}>
+          <div style={{
+            fontFamily: '"Bebas Neue", cursive', fontSize: '38px',
+            lineHeight: 1, color: '#fff', letterSpacing: '0.01em',
+          }}>{s.num}</div>
+          <div style={{
+            fontFamily: '"DM Mono", monospace', fontSize: '9px',
+            letterSpacing: '0.2em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.22)', marginTop: 5,
+          }}>{s.label}</div>
+        </div>
+      ))}
+    </motion.div>
   )
 }

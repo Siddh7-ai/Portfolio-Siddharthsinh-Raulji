@@ -2,18 +2,58 @@ import { useEffect, useRef } from 'react'
 import { useLoader } from '../context/LoaderContext'
 
 export default function Loader() {
-  const { visible, handleLoaderDone } = useLoader()
+  const { visible, handleLoaderDone, loaderType } = useLoader()
   const mainRef   = useRef(null)
   const hiddenRef = useRef(null)
   const rafRef    = useRef(null)
   const stateRef  = useRef(null)
 
-  const DUR = { scatter: 70, form: 130, glow: 100, explode: 75, reset: 35 }
+  // Default durations
+  const DUR_DEFAULT = { scatter: 70, form: 130, glow: 100, explode: 75, reset: 35 }
+  // Faster durations for transitions
+  const DUR_MAGIC   = { scatter: 30, form: 65,  glow: 45,  explode: 45, reset: 20 }
+
+  function getMagicTargets(w, h, hctx) {
+    const isMobile = w <= 768
+    const fontSize = isMobile ? Math.min(w, h) * 0.23 : Math.min(w, h) * 0.16
+    
+    hctx.clearRect(0, 0, w, h)
+    hctx.fillStyle = '#ffffff'
+    hctx.font = `400 ${fontSize}px "Bebas Neue", cursive`
+    hctx.textAlign = 'center'
+    hctx.textBaseline = 'middle'
+
+    const lines = ["BREWING", "DIGITAL MAGIC"]
+    const lineHeight = fontSize * 0.92
+    const totalH = lines.length * lineHeight
+    const startY = h / 2 - totalH / 2 + lineHeight / 2 - 10
+
+    if ('letterSpacing' in hctx) {
+      hctx.letterSpacing = "4px"
+    }
+
+    lines.forEach((line, i) => {
+      hctx.fillText(line, w / 2, startY + i * lineHeight)
+    })
+
+    const data    = hctx.getImageData(0, 0, w, h).data
+    const targets = []
+    const scanStep = 2 // Denser scan for better definition
+    for (let y = 0; y < h; y += scanStep)
+      for (let x = 0; x < w; x += scanStep)
+        if (data[(y * w + x) * 4] > 120) targets.push({ x, y })
+
+    for (let i = targets.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [targets[i], targets[j]] = [targets[j], targets[i]]
+    }
+    return targets
+  }
 
   function getSRTargets(w, h, hctx) {
     const size  = Math.min(w, h) * 0.50
     const scale = size / 130
-    const ox    = w / 2 - 59 * scale /* shifted from 65 to exactly match the 59 bounds center */
+    const ox    = w / 2 - 59 * scale
     const oy    = h / 2 - 65 * scale - 20
 
     hctx.clearRect(0, 0, w, h)
@@ -55,14 +95,19 @@ export default function Loader() {
     return targets
   }
 
-  function makeParticle(tx, ty, w, h) {
+  function makeParticle(tx, ty, w, h, isMagic) {
     const side = Math.floor(Math.random() * 4)
     const x = side===0 ? Math.random()*w : side===1 ? w+20 : side===2 ? Math.random()*w : -20
     const y = side===0 ? -20 : side===1 ? Math.random()*h : side===2 ? h+20 : Math.random()*h
+    
+    const size = isMagic 
+      ? Math.random() * 1.5 + 0.8 
+      : Math.random() * 1.8 + 0.8
+
     return { tx, ty, x, y, vx:0, vy:0,
-      size: Math.random()*1.8+0.8, alpha:0,
-      speed: 0.055+Math.random()*0.04,
-      delay: Math.random()*0.45,
+      size, alpha:0,
+      speed: isMagic ? 0.08 + Math.random()*0.06 : 0.055 + Math.random()*0.04,
+      delay: isMagic ? Math.random()*0.25 : Math.random()*0.45,
       exploding:false, evx:0, evy:0 }
   }
 
@@ -77,14 +122,16 @@ export default function Loader() {
     hCanvas.height = canvas.height
 
     const w = canvas.width, h = canvas.height
-    const raw = getSRTargets(w, h, hCanvas.getContext('2d'))
-    const MAX  = Math.min(raw.length, 650)
+    const hctx = hCanvas.getContext('2d')
+    const isMagic = loaderType === 'magic'
+    const raw = isMagic ? getMagicTargets(w, h, hctx) : getSRTargets(w, h, hctx)
+    const MAX  = isMagic ? Math.min(raw.length, 4500) : Math.min(raw.length, 650)
     const step = Math.max(1, Math.floor(raw.length / MAX))
 
     stateRef.current = {
-      particles: raw.filter((_,i) => i%step===0).slice(0,MAX).map(t => makeParticle(t.x,t.y,w,h)),
+      particles: raw.filter((_,i) => i%step===0).slice(0,MAX).map(t => makeParticle(t.x,t.y,w,h,isMagic)),
       phase:'scatter', timer:0, fp:0, glow:0, glowDir:1,
-      dotAlpha: 0,  /* for smooth fade in/out of canvas dots */
+      dotAlpha: 0,
     }
   }
 
@@ -94,6 +141,8 @@ export default function Loader() {
     const ctx = canvas.getContext('2d')
     const w = canvas.width, h = canvas.height
     const s = stateRef.current
+    const isMagic = loaderType === 'magic'
+    const DUR = isMagic ? DUR_MAGIC : DUR_DEFAULT
 
     ctx.fillStyle = '#0a0a09'
     ctx.fillRect(0, 0, w, h)
@@ -121,7 +170,6 @@ export default function Loader() {
       if (s.timer >= DUR.form) { s.phase='glow'; s.timer=0 }
     }
     else if (s.phase === 'glow') {
-      /* Fade dots in */
       s.dotAlpha = Math.min(1, s.dotAlpha + 0.04)
       s.glow += 0.055 * s.glowDir
       if (s.glow >= 1)    s.glowDir = -1
@@ -129,7 +177,6 @@ export default function Loader() {
       if (s.timer >= DUR.glow) { s.phase='explode'; s.timer=0 }
     }
     else if (s.phase === 'explode') {
-      /* Fade dots out */
       s.dotAlpha = Math.max(0, s.dotAlpha - 0.06)
       if (s.timer >= DUR.explode) { s.phase='reset'; s.timer=0 }
     }
@@ -144,7 +191,6 @@ export default function Loader() {
     const cx = w/2, cy = h/2
     const useGlow = s.phase==='glow' || s.phase==='form'
 
-    /* Update all particles first */
     s.particles.forEach(p => {
       if (s.phase==='scatter') {
         p.vx+=(Math.random()-.5)*0.5; p.vy+=(Math.random()-.5)*0.5
@@ -162,7 +208,7 @@ export default function Loader() {
         if (!p.exploding) {
           p.exploding=true
           const angle=Math.atan2(p.ty-cy,p.tx-cx)+(Math.random()-.5)*0.9
-          const spd=5+Math.random()*11
+          const spd=isMagic ? 8+Math.random()*15 : 5+Math.random()*11
           p.evx=Math.cos(angle)*spd; p.evy=Math.sin(angle)*spd
         }
         p.evx*=0.93; p.evy*=0.93; p.x+=p.evx; p.y+=p.evy
@@ -170,20 +216,18 @@ export default function Loader() {
       }
     })
 
-    /* Draw non-glowing particles first (cheap) */
     ctx.save()
     ctx.fillStyle='#e8e6e1'
     s.particles.forEach(p => {
-      if (useGlow) return  /* skip — drawn in glow pass below */
+      if (useGlow) return
       ctx.globalAlpha=p.alpha
       ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill()
     })
     ctx.restore()
 
-    /* Draw glowing particles — ONE shadow state for all, much cheaper */
     if (useGlow) {
       ctx.save()
-      ctx.shadowBlur = s.glow * 10  /* reduced from 18 → 10 */
+      ctx.shadowBlur = s.glow * 10 
       ctx.shadowColor = 'rgba(232,230,225,0.75)'
       ctx.fillStyle = '#e8e6e1'
       s.particles.forEach(p => {
@@ -193,7 +237,6 @@ export default function Loader() {
       ctx.restore()
     }
 
-    /* ── Bounce dots — shadow fully reset so particle glow never leaks in ── */
     if (s.dotAlpha > 0) {
       const t = Date.now() / 1000
       const dotCx = w / 2
@@ -202,30 +245,22 @@ export default function Loader() {
       const dotR = 4
 
       ctx.save()
-      ctx.shadowBlur = 0
-      ctx.shadowColor = 'transparent'
-      ctx.globalCompositeOperation = 'source-over'
+      ctx.shadowBlur = 0; ctx.shadowColor = 'transparent'; ctx.globalCompositeOperation = 'source-over'
 
       ;[-1, 0, 1].forEach((offset, i) => {
-        const delay  = i * 0.15
+        const delay = i * 0.15
         const bounce = Math.sin((t - delay) * (Math.PI * 2 / 1.2))
         const by = dotBaseY + bounce * -6
         ctx.globalAlpha = s.dotAlpha * 0.9
         ctx.fillStyle = '#e8e6e1'
-        ctx.beginPath()
-        ctx.arc(dotCx + offset * spacing, by, dotR, 0, Math.PI * 2)
-        ctx.fill()
+        ctx.beginPath(); ctx.arc(dotCx + offset * spacing, by, dotR, 0, Math.PI * 2); ctx.fill()
       })
 
-      ctx.globalAlpha = s.dotAlpha * 0.22
-      ctx.fillStyle = '#e8e6e1'
-      ctx.font = '500 9px "DM Mono", monospace'
-      ctx.textAlign = 'center'
-      ctx.fillText('LOADING PORTFOLIO...', w / 2, h - 38)
-
+      ctx.globalAlpha = s.dotAlpha * 0.22; ctx.fillStyle = '#e8e6e1'
+      ctx.font = '500 9px "DM Mono", monospace'; ctx.textAlign = 'center'
+      ctx.fillText(isMagic ? 'BREWING MAGIC...' : 'LOADING PORTFOLIO...', w / 2, h - 38)
       ctx.restore()
     }
-
     rafRef.current = requestAnimationFrame(tick)
   }
 
@@ -242,12 +277,7 @@ export default function Loader() {
   if (!visible) return null
 
   return (
-    <div
-      style={{
-        position:'fixed', inset:0, zIndex:9999,
-        background:'#0a0a09', pointerEvents:'all',
-      }}
-    >
+    <div style={{ position:'fixed', inset:0, zIndex:9999, background:'#0a0a09', pointerEvents:'all' }}>
       <canvas ref={mainRef} style={{ position:'absolute', inset:0, width:'100%', height:'100%' }} />
       <canvas ref={hiddenRef} style={{ display:'none' }} />
     </div>

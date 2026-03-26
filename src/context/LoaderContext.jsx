@@ -5,11 +5,13 @@ const LoaderContext = createContext(null)
 export function LoaderProvider({ children }) {
   /* Start as TRUE so loader shows instantly on first render — no flash */
   const [visible, setVisible] = useState(true)
+  const [loaderType, setLoaderType] = useState('default')
   const [projectsRevealed, setProjectsRevealed] = useState(false)
   const callbackRef = useRef(null)
 
-  const triggerLoader = useCallback((onComplete) => {
+  const triggerLoader = useCallback((onComplete, type = 'default') => {
     callbackRef.current = onComplete || null
+    setLoaderType(type)
     setVisible(true)
   }, [])
 
@@ -24,6 +26,7 @@ export function LoaderProvider({ children }) {
   return (
     <LoaderContext.Provider value={{
       visible, triggerLoader, handleLoaderDone,
+      loaderType,
       projectsRevealed, setProjectsRevealed,
     }}>
       {children}

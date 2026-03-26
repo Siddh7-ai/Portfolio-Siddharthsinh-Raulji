@@ -11,9 +11,7 @@ function AppInner() {
 
   return (
     <>
-      <Cursor />
-
-      {/* Page hidden while loader shows — no flash */}
+      {/* Page content */}
       <div style={{ visibility: visible ? 'hidden' : 'visible' }}>
         <Routes>
           <Route path="/"         element={<HomePage />} />
@@ -25,6 +23,9 @@ function AppInner() {
       <AnimatePresence>
         {visible && <Loader key="loader" />}
       </AnimatePresence>
+
+      {/* Global Cursor - last for backdrop inversion */}
+      <Cursor />
     </>
   )
 }

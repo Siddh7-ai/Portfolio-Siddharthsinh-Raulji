@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useLoader } from '../context/LoaderContext'
@@ -11,7 +11,6 @@ const allProjects = [
     category: 'Full Stack · Security · ML Model',
     desc: 'Engineered an AI-powered phishing detection system that analyzes URLs and web content in real time to identify malicious websites. Integrated a browser extension that delivers instant alerts and actively protects users during browsing, improving overall web security and threat awareness.',
     tags: ['React', 'JavaScript', 'Python', 'Machine Learning', 'Browser Extension'],
-    year: '2025',
     imageUrl: '/projects/project-01.png',
     liveUrl: 'https://phish-guard-ai-lac.vercel.app/',
     demoUrl: 'https://github.com/Siddh7-ai/PhishGuardAi',
@@ -23,7 +22,6 @@ const allProjects = [
     category: 'Cybersecurity · Python',
     desc: 'Built a secure file encryption system with time-based access control and automatic re-encryption to ensure data confidentiality. Designed a modular architecture with GUI support, enabling controlled file sharing, user management, and secure handling of sensitive data.',
     tags: ['Python', 'Cryptography', 'File Encryption'],
-    year: '2025',
     imageUrl: '/projects/project-02.png',
     demoUrl: 'https://github.com/Siddh7-ai/AxCrypt',
   },
@@ -34,7 +32,6 @@ const allProjects = [
     category: 'EdTech · AI-Based Learning Platform',
     desc: 'Developed an AI-driven learning platform that personalizes study materials based on student performance and progress. Implemented smart recommendations, analytics tracking, and goal-based learning features to improve engagement and learning efficiency.',
     tags: ['HTML', 'CSS', 'JavaScript'],
-    year: '2025',
     imageUrl: '/projects/project-03.png',
     demoUrl: 'https://github.com/Siddh7-ai/EduLearn',
   },
@@ -45,7 +42,6 @@ const allProjects = [
     category: 'Security · Network Protection',
     desc: 'Created an AI-powered WiFi security tool that scans nearby networks and connected devices to detect vulnerabilities such as weak encryption, open networks, and suspicious connections. Generates security scores with actionable insights and provides an interactive dashboard with report generation for easy monitoring.',
     tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'REST API'],
-    year: '2025',
     imageUrl: '/projects/project-04.png',
     demoUrl: 'https://github.com/Siddh7-ai/ShieldNet',
   },
@@ -56,7 +52,6 @@ const allProjects = [
     category: 'Full Stack · Inventory Management',
     desc: 'Developed a role-based inventory management system to streamline warehouse operations, including product tracking, deliveries, transfers, and stock adjustments. Designed separate interfaces for managers and staff, improving operational efficiency and data visibility.',
     tags: ['React', 'Node.js', 'Prisma', 'Tailwind'],
-    year: '2025',
     imageUrl: '/projects/project-05.png',
     demoUrl: 'https://github.com/Siddh7-ai/CoreInventory/tree/frontend',
   },
@@ -75,6 +70,10 @@ export default function AllProjectsPage() {
   const navigate = useNavigate()
   const { triggerLoader } = useLoader()
   const [hovered, setHovered] = useState(null)
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const goHome = useCallback(() => {
     triggerLoader(() => {

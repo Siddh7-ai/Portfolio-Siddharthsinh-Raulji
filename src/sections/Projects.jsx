@@ -485,8 +485,8 @@ export default function Projects() {
   const [hoverBtn, setHoverBtn] = useState(false)
 
   const handleViewAll = useCallback(() => {
-    navigate('/projects')
-  }, [navigate])
+    triggerLoader(() => navigate('/projects'), 'magic')
+  }, [triggerLoader, navigate])
 
   useEffect(() => {
     const unsub = pullY.on('change', v => {
