@@ -9,16 +9,28 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* Smooth transitions for all interactive elements */
-    transition: color 130ms cubic-bezier(0.4, 0, 0.2, 1), 
-                background-color 130ms cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 130ms cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 130ms cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 130ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Lenis requirements */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
   }
 
   html {
-    scroll-behavior: smooth;
+    /* Lenis handles smoothness now */
+    scroll-behavior: auto;
   }
 
   html, body, #root {
@@ -28,51 +40,86 @@
 
   html, body {
     height: 100%;
+    background-color: #e8e6e1;
   }
 
   body {
-    background-color: #e8e6e1;
     font-family: 'DM Sans', sans-serif;
     color: #111110;
     overflow-x: hidden;
+    /* Basic font smoothing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Targeted transitions for better performance */
+  .transition-standard {
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .transition-color {
+    transition: color 130ms cubic-bezier(0.4, 0, 0.2, 1), 
+                background-color 130ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 130ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Smooth scrollbar styling */
   ::-webkit-scrollbar { 
-    width: 4px; 
-    transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    width: 6px; 
   }
   ::-webkit-scrollbar-track { 
     background: #e8e6e1; 
-    transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
   ::-webkit-scrollbar-thumb { 
-    background: rgba(17,17,16,0.25); 
-    border-radius: 2px; 
-    transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(17,17,16,0.2); 
+    border-radius: 10px; 
+    transition: background 200ms ease;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(17,17,16,0.4);
+    background: rgba(17,17,16,0.35);
   }
 
   /* Smooth button and link interactions */
   button, a, [role="button"] {
-    transition: all 130ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 150ms ease, background-color 150ms ease, opacity 150ms ease, transform 150ms ease;
   }
 
   /* Smooth input and form interactions */
   input, textarea, select {
-    transition: all 160ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: border-color 160ms ease, box-shadow 160ms ease;
   }
   input:focus, textarea:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(17, 17, 16, 0.1);
-    transition: box-shadow 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  /* Low Performance Modes */
+  body.low-perf *, 
+  body.low-perf-hardware * {
+    transition: none !important;
+    animation: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  body.low-perf .cursor-ring,
+  body.low-perf-hardware .cursor-ring {
+    opacity: 0.8 !important;
+    background: transparent !important;
+    border: 1px solid #111110 !important;
   }
 }
 
 @layer utilities {
   .font-display { font-family: 'Bebas Neue', cursive; }
   .font-mono    { font-family: 'DM Mono', monospace; }
+
+  /* Hardware Acceleration */
+  .gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+  }
 
   /* Text bleed — allows overflow both sides */
   .text-bleed {
@@ -82,7 +129,7 @@
 
   /* Smooth animation utilities */
   .smooth-transition {
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
   }
   .smooth-transition-150 {
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);

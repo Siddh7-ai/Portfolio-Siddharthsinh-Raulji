@@ -59,6 +59,7 @@ export default function Cursor() {
           width: 8, height: 8,
           background: '#FFFFFF', // White for mix-blend-mode difference
           mixBlendMode: 'difference',
+          willChange: 'transform, opacity',
         }}
         transition={{ type: 'spring', stiffness: 350, damping: 28 }}
       />
@@ -84,6 +85,7 @@ export default function Cursor() {
           translateX: '-50%',
           translateY: '-50%',
           mixBlendMode: 'difference',
+          willChange: 'transform, opacity, width, height',
         }}
         transition={{ 
           width: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },

@@ -133,7 +133,12 @@ function PolaroidWall({ onExpand }) {
   }, [])
 
   return (
-    <div className="projects-wall-container" style={{ position: 'absolute', bottom: '12%', left: '50%', transform: 'translateX(-50%)', width: '90vw', maxWidth: 1100, height: 380, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="projects-wall-container gpu" style={{ 
+      position: 'absolute', bottom: '12%', left: '50%', transform: 'translateX(-50%)', 
+      width: '90vw', maxWidth: 1100, height: 380, zIndex: 20, 
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      willChange: 'transform',
+    }}>
       {projects.map((project, i) => {
         const layoutConfig = isMobile ? MOBILE_POLAROID_LAYOUT[i] || POLAROID_LAYOUT[i] : POLAROID_LAYOUT[i]
         return (
@@ -366,6 +371,7 @@ function HangingString({ pullY, isPulled, onToggleLight }) {
             willChange: 'transform',
             transform: `translate(-50%, ${BASE_H}px)`,
           }}
+          className="gpu"
         >
           <div style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid rgba(140,100,55,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ width: 14, height: 14, borderRadius: '50%', border: '1px solid rgba(160,120,70,0.3)' }} />
@@ -395,8 +401,8 @@ function WorkVaultHeading({ revealed }) {
       initial={{ opacity: 0, y: 50, scale: 0.94 }}
       animate={revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.94 }}
       transition={{ duration: 0.75, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-      style={{ position: 'absolute', top: '8%', left: '6%', zIndex: 10, maxWidth: '44%' }}
-    >
+        style={{ position: 'absolute', top: '8%', left: '6%', zIndex: 10, maxWidth: '44%', willChange: 'transform, opacity' }}
+      >
       <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 'clamp(16px, 1vw, 11px)', letterSpacing: '0.11em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '0.4em' }}>
         Work
       </p>

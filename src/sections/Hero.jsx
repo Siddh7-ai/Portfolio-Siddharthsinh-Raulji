@@ -319,7 +319,9 @@ export default function Hero() {
           opacity: fadeOut,
           pointerEvents: 'none',
           userSelect: 'none',
+          willChange: 'transform, opacity',
         }}
+        className="gpu"
       >
         <motion.div
           initial={{ opacity: 0, y: 80 }}
@@ -339,7 +341,7 @@ export default function Hero() {
 
       {/* ── PHOTO — outside overflow:hidden, zIndex 5 beats Navbar zIndex 4 ── */}
       <motion.div
-        className="hero-photo-container"
+        className="hero-photo-container gpu"
         style={{
           position: 'absolute',
           bottom: 0,
@@ -352,6 +354,7 @@ export default function Hero() {
           y: photoY,
           opacity: photoOpacity,
           scale: photoScale,
+          willChange: 'transform, opacity, scale',
         }}
         initial={{ opacity: 0, y: 40, scale: 1.04 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}

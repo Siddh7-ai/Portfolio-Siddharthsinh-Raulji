@@ -153,11 +153,13 @@ export default function AllProjectsPage() {
             variants={item}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
+            className="gpu"
             style={{
               background: hovered===i ? '#111110' : '#e8e6e1',
               padding: '32px',
               transition: 'background 0.3s ease',
               cursor: 'none',
+              willChange: 'transform, opacity, background',
             }}
           >
             {/* Number + Year */}

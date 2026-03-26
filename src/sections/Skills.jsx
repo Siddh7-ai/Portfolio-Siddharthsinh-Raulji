@@ -767,17 +767,19 @@ export default function MagneticSkills() {
       }}
     >
       {/* Layer 1 — field lines */}
-      <canvas ref={canvasRef} style={{
+      <canvas ref={canvasRef} className="gpu" style={{
         position: 'absolute', inset: 0, width: '100%', height: '100%',
         pointerEvents: 'none', zIndex: 1,
+        willChange: 'transform, opacity',
       }} />
 
       {/* Layer 2 — torch beam */}
-      <canvas ref={torchCanvasRef} style={{
+      <canvas ref={torchCanvasRef} className="gpu" style={{
         position: 'absolute', inset: 0, width: '100%', height: '100%',
         pointerEvents: 'none', zIndex: 2,
         opacity: torchOn ? 1 : 0,
         transition: 'opacity 600ms cubic-bezier(0.4, 0, 0.2, 1)',
+        willChange: 'opacity',
       }} />
 
       {/* ── Header ── */}
@@ -848,7 +850,7 @@ export default function MagneticSkills() {
           ? `0 0 22px rgba(255,160,40,0.18), 0 0 8px rgba(255,180,60,0.10), 0 0 14px ${tech.color}22, inset 0 0 6px ${tech.color}0a`
           : `0 0 14px ${tech.color}22, inset 0 0 6px ${tech.color}0a`
         return (
-          <div key={tech.name} style={{
+          <div key={tech.name} className="gpu" style={{
             position: 'absolute',
             left: x - size / 2, top: y - size / 2,
             width: size, height: size, borderRadius: '50%',
@@ -859,6 +861,7 @@ export default function MagneticSkills() {
             opacity, zIndex: 20, pointerEvents: 'none',
             boxShadow: torchGlow,
             transition: 'opacity 0.1s, box-shadow 0.4s',
+            willChange: 'transform, opacity',
           }}>
             {Icon && <Icon c={tech.color} />}
           </div>
@@ -908,7 +911,7 @@ export default function MagneticSkills() {
       ════════════════════════════════════════════════ */}
       <motion.div
         ref={torchWrapRef}
-        className="torch-wrapper"
+        className="torch-wrapper gpu"
         initial={{ opacity: 0, y: 40 }}
         animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.75 }}
@@ -924,6 +927,7 @@ export default function MagneticSkills() {
           cursor: 'pointer',
           zIndex: 100,
           userSelect: 'none',
+          willChange: 'transform, opacity',
         }}
       >
         {/* Ambient glow halo when torch is on */}

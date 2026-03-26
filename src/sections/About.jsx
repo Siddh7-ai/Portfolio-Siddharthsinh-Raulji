@@ -182,11 +182,13 @@ function IDCard({ inView }) {
 
       {/* Card — moves freely in all directions */}
       <motion.div
+        className="gpu"
         style={{
           rotate: smoothRotate, y: springY, x: springX,
           transformOrigin: 'top center',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           cursor: dragging ? 'grabbing' : 'grab',
+          willChange: 'transform',
         }}
         onPointerDown={onPointerDown}
       >
@@ -352,7 +354,9 @@ export default function About() {
               lineHeight: 0.9, letterSpacing: '0.01em',
               color: '#ffffff', whiteSpace: 'nowrap',
               paddingTop: '18px', paddingLeft: '40px', display: 'block',
+              willChange: 'transform',
             }}
+            className="gpu"
           >/ABOUT</motion.div>
         </div>
 
