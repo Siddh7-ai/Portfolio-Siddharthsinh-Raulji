@@ -15,7 +15,7 @@ export default function Loader() {
 
   function getMagicTargets(w, h, hctx) {
     const isMobile = w <= 768
-    const fontSize = isMobile ? Math.min(w, h) * 0.23 : Math.min(w, h) * 0.16
+    const fontSize = isMobile ? Math.min(w, h) * 0.135 : Math.min(w, h) * 0.16
     
     hctx.clearRect(0, 0, w, h)
     hctx.fillStyle = '#ffffff'
@@ -24,12 +24,12 @@ export default function Loader() {
     hctx.textBaseline = 'middle'
 
     const lines = ["BREWING", "DIGITAL MAGIC"]
-    const lineHeight = fontSize * 0.92
+    const lineHeight = fontSize * (isMobile ? 0.95 : 0.92)
     const totalH = lines.length * lineHeight
-    const startY = h / 2 - totalH / 2 + lineHeight / 2 - 10
+    const startY = h / 2 - totalH / 2 + lineHeight / 2
 
     if ('letterSpacing' in hctx) {
-      hctx.letterSpacing = "4px"
+      hctx.letterSpacing = isMobile ? "2px" : "4px"
     }
 
     lines.forEach((line, i) => {
@@ -38,7 +38,7 @@ export default function Loader() {
 
     const data    = hctx.getImageData(0, 0, w, h).data
     const targets = []
-    const scanStep = 2 // Denser scan for better definition
+    const scanStep = 1 // Maximum resolution scan
     for (let y = 0; y < h; y += scanStep)
       for (let x = 0; x < w; x += scanStep)
         if (data[(y * w + x) * 4] > 120) targets.push({ x, y })
@@ -101,8 +101,8 @@ export default function Loader() {
     const y = side===0 ? -20 : side===1 ? Math.random()*h : side===2 ? h+20 : Math.random()*h
     
     const size = isMagic 
-      ? Math.random() * 1.5 + 0.8 
-      : Math.random() * 1.8 + 0.8
+      ? Math.random() * 0.7 + 0.5 
+      : Math.random() * 1.5 + 0.8
 
     return { tx, ty, x, y, vx:0, vy:0,
       size, alpha:0,
@@ -125,7 +125,7 @@ export default function Loader() {
     const hctx = hCanvas.getContext('2d')
     const isMagic = loaderType === 'magic'
     const raw = isMagic ? getMagicTargets(w, h, hctx) : getSRTargets(w, h, hctx)
-    const MAX  = isMagic ? Math.min(raw.length, 4500) : Math.min(raw.length, 650)
+    const MAX  = isMagic ? Math.min(raw.length, 3200) : Math.min(raw.length, 650)
     const step = Math.max(1, Math.floor(raw.length / MAX))
 
     stateRef.current = {
@@ -203,7 +203,7 @@ export default function Loader() {
         p.y+=(p.ty-p.y)*p.speed*(1+ease*3)
         p.alpha=Math.min(1,0.2+ease*0.8)
       } else if (s.phase==='glow') {
-        p.x+=(p.tx-p.x)*0.2; p.y+=(p.ty-p.y)*0.2; p.alpha=1
+        p.x = p.tx; p.y = p.ty; p.alpha = 1
       } else if (s.phase==='explode') {
         if (!p.exploding) {
           p.exploding=true
@@ -227,8 +227,8 @@ export default function Loader() {
 
     if (useGlow) {
       ctx.save()
-      ctx.shadowBlur = s.glow * 10 
-      ctx.shadowColor = 'rgba(232,230,225,0.75)'
+      ctx.shadowBlur = 0
+      ctx.shadowColor = 'transparent'
       ctx.fillStyle = '#e8e6e1'
       s.particles.forEach(p => {
         ctx.globalAlpha = p.alpha

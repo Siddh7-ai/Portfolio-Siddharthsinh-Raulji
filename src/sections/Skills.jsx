@@ -752,7 +752,7 @@ export default function MagneticSkills() {
     }
   }, [])
 
-  const CORE_SIZE = 92
+  const CORE_SIZE = isMobile ? 69 : 92
 
   return (
     <section
@@ -900,7 +900,7 @@ export default function MagneticSkills() {
           transition: 'box-shadow 0.45s ease',
         }}
       >
-        <SRLogo color="#ffffff" size={46} />
+        <SRLogo color="#ffffff" size={isMobile ? 32 : 46} />
       </motion.div>
 
       {/* ════════════════════════════════════════════════
