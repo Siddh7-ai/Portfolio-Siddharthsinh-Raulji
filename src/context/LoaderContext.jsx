@@ -5,7 +5,12 @@ const LoaderContext = createContext(null)
 export function LoaderProvider({ children }) {
   /* Start as TRUE so loader shows instantly on first render — no flash */
   const [visible, setVisible] = useState(true)
-  const [loaderType, setLoaderType] = useState('default')
+  const [loaderType, setLoaderType] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.pathname === '/projects') {
+      return 'magic'
+    }
+    return 'default'
+  })
   const [projectsRevealed, setProjectsRevealed] = useState(false)
   const callbackRef = useRef(null)
 
