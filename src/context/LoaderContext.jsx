@@ -12,30 +12,29 @@ export function LoaderProvider({ children }) {
     return 'default'
   })
   const [projectsRevealed, setProjectsRevealed] = useState(false)
+  const [customText, setCustomText] = useState('')
   const callbackRef = useRef(null)
 
-  const triggerLoader = useCallback((onComplete, type = 'default') => {
+  const triggerLoader = useCallback((onComplete, type = 'default', text = '') => {
     callbackRef.current = onComplete || null
     setLoaderType(type)
+    setCustomText(text)
     setVisible(true)
   }, [])
 
   const handleLoaderDone = useCallback(() => {
     setVisible(false)
+    setCustomText('')
     if (callbackRef.current) {
       callbackRef.current()
       callbackRef.current = null
     }
-    // Force instant scroll-to-top on route reveal
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 10);
   }, [])
 
   return (
     <LoaderContext.Provider value={{
       visible, triggerLoader, handleLoaderDone,
-      loaderType,
+      loaderType, customText,
       projectsRevealed, setProjectsRevealed,
     }}>
       {children}

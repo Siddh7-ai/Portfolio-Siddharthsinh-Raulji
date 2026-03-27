@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { useLoader } from '../context/LoaderContext'
 
 /* ── SR Logo ── */
@@ -94,16 +95,31 @@ const logoVariants = {
 
 export default function Footer() {
   const { triggerLoader } = useLoader()
+  const navigate = useNavigate()
 
   const handleNav = useCallback((e, href) => {
     e.preventDefault()
     const id = href.replace('#','')
+    const isHome = window.location.pathname === '/'
+
     triggerLoader(() => {
-      const el = document.getElementById(id)
-      if (el) el.scrollIntoView({ behavior: 'smooth' })
-      else window.scrollTo({ top: 0, behavior: 'smooth' })
-    })
-  }, [triggerLoader])
+      if (!isHome) {
+        navigate('/')
+        // Increased delay to 150ms to ensure Home page is mounted
+        setTimeout(() => {
+          const el = document.getElementById(id)
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+          else window.scrollTo({ top: 0, behavior: 'smooth' })
+        }, 150)
+      } else {
+        setTimeout(() => {
+          const el = document.getElementById(id)
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+          else window.scrollTo({ top: 0, behavior: 'smooth' })
+        }, 80)
+      }
+    }, 'default')
+  }, [triggerLoader, navigate])
 
   return (
     <footer

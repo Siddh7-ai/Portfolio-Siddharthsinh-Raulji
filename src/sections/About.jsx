@@ -476,8 +476,8 @@ function StatsBlock({ inView }) {
       style={{ display: 'flex', gap: '48px' }}
     >
       {[
-        { num: '15+',  label: 'Projects'  },
-        { num: '10+',  label: 'Hackathon' },
+        { num: '5+',  label: 'Projects'  },
+        { num: '3+',  label: 'Hackathon' },
         { num: '100%', label: 'Dedicated' },
       ].map(s => (
         <div key={s.label}>

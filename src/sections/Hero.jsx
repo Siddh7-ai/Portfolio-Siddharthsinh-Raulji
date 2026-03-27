@@ -271,6 +271,7 @@ export default function Hero() {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       style={{
         position: 'relative',

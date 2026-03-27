@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
 import { useLoader } from '../context/LoaderContext'
 
@@ -75,7 +75,7 @@ function MagneticBtn({ children, href, target, rel, download, onNavClick }) {
 
     e.preventDefault()
     const id = href.replace('#', '')
-    const isHome = window.location.pathname === '/'
+    const isHome = window.location.pathname === '/' || window.location.pathname === ''
 
     triggerLoader(() => {
       if (!isHome) {
@@ -83,11 +83,14 @@ function MagneticBtn({ children, href, target, rel, download, onNavClick }) {
         setTimeout(() => {
           const el = document.getElementById(id)
           if (el) el.scrollIntoView({ behavior: 'smooth' })
-        }, 100)
+        }, 150)
       } else {
-        const el = document.getElementById(id)
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
-        else window.scrollTo({ top: 0, behavior: 'smooth' })
+        // Even on home page, use a small delay to escape the current tick
+        setTimeout(() => {
+          const el = document.getElementById(id)
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+          else window.scrollTo({ top: 0, behavior: 'smooth' })
+        }, 80)
       }
     })
   }, [href, isSectionLink, navigate, triggerLoader, onNavClick])
@@ -156,18 +159,20 @@ function NavLink({ label, href, delay, onNavClick }) {
     e.preventDefault()
     if (onNavClick) onNavClick();
     const id = href.replace('#','')
-    const isOnHomePage = window.location.pathname === '/'
+    const isOnHomePage = window.location.pathname === '/' || window.location.pathname === ''
     triggerLoader(() => {
       if (!isOnHomePage) {
         navigate('/')
         setTimeout(() => {
           const el = document.getElementById(id)
           if (el) el.scrollIntoView({ behavior: 'smooth' })
-        }, 100)
+        }, 150)
       } else {
-        const el = document.getElementById(id)
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
-        else window.scrollTo({ top: 0, behavior: 'smooth' })
+        setTimeout(() => {
+          const el = document.getElementById(id)
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+          else window.scrollTo({ top: 0, behavior: 'smooth' })
+        }, 80)
       }
     })
   }, [href, triggerLoader, navigate, onNavClick])
@@ -274,10 +279,11 @@ function SRLogoBtn({ isProjectsPage }) {
 }
 
 export default function Navbar() {
+  const location = useLocation()
   const [visible, setVisible] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false)
-  const isProjectsPage = window.location.pathname === '/projects'
+  const isHome = location.pathname === '/' || location.pathname === ''
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768)
@@ -286,13 +292,23 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => {
-    if (isProjectsPage) { setVisible(true); return }
-    const onScroll = () => {
-      setVisible(window.scrollY < window.innerHeight * 0.8)
+    // If not on Home page, Navbar should ALWAYS be visible
+    if (!isHome) { 
+      setVisible(true)
+      return 
     }
+    
+    const onScroll = () => {
+      const isVisible = window.scrollY < window.innerHeight * 0.8
+      setVisible(isVisible)
+    }
+    
+    // Initial check on mount
+    onScroll()
+    
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [isProjectsPage])
+  }, [isHome])
 
   return (
     <AnimatePresence>
@@ -343,7 +359,7 @@ export default function Navbar() {
             }}>
               {/* Logo Column */}
               <div style={{ flex: isMobile ? '0 0 auto' : '0 0 25%', display: 'flex', alignItems: 'center' }}>
-                <SRLogoBtn isProjectsPage={isProjectsPage} />
+                <SRLogoBtn isProjectsPage={!isHome} />
               </div>
 
               {/* Desktop Centered Links */}

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLoader } from '../context/LoaderContext'
 
 export default function Loader() {
-  const { visible, handleLoaderDone, loaderType } = useLoader()
+  const { visible, handleLoaderDone, loaderType, customText } = useLoader()
   const mainRef   = useRef(null)
   const hiddenRef = useRef(null)
   const rafRef    = useRef(null)
@@ -33,7 +33,10 @@ export default function Loader() {
     hctx.textAlign = 'center'
     hctx.textBaseline = 'middle'
 
-    const lines = ["BREWING", "DIGITAL MAGIC"]
+    const lines = customText 
+      ? customText.toUpperCase().split(' ') 
+      : ["BREWING", "DIGITAL MAGIC"]
+      
     const lineHeight = fontSize * (isMobile ? 0.95 : 0.92)
     const totalH = lines.length * lineHeight
     const startY = h / 2 - totalH / 2 + lineHeight / 2
@@ -43,6 +46,7 @@ export default function Loader() {
     }
 
     lines.forEach((line, i) => {
+      // Split very long lines if needed or handle 2+ lines
       hctx.fillText(line, w / 2, startY + i * lineHeight)
     })
 
@@ -140,7 +144,7 @@ export default function Loader() {
 
     const w = canvas.width, h = canvas.height
     const ctx = canvas.getContext('2d')
-    const hctx = hCanvas.getContext('2d')
+    const hctx = hCanvas.getContext('2d', { willReadFrequently: true })
 
     // Cache the radial gradient to reduce per-frame overhead
     const vg = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.65)
@@ -308,7 +312,11 @@ export default function Loader() {
 
       ctx.globalAlpha = s.dotAlpha * 0.22; ctx.fillStyle = '#e8e6e1'
       ctx.font = '500 9px "DM Mono", monospace'; ctx.textAlign = 'center'
-      ctx.fillText(isMagic ? 'BREWING MAGIC...' : 'LOADING PORTFOLIO...', w / 2, h - 38)
+      
+      let label = isMagic ? 'BREWING MAGIC...' : 'LOADING PORTFOLIO...'
+      if (customText) label = customText.toUpperCase() + '...'
+      
+      ctx.fillText(label, w / 2, h - 38)
       ctx.restore()
     }
     rafRef.current = requestAnimationFrame(tick)

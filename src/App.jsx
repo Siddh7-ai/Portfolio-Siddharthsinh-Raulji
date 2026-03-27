@@ -5,8 +5,10 @@ import Cursor          from './components/Cursor'
 import Loader          from './components/Loader'
 import HomePage        from './pages/HomePage'
 import AllProjectsPage from './pages/AllProjectsPage'
+import ProjectDetail   from './pages/ProjectDetail'
 import { LoaderProvider, useLoader } from './context/LoaderContext'
 import SmoothScroll    from './components/SmoothScroll'
+import Navbar          from './components/Navbar'
 
 function AppInner() {
   const { visible } = useLoader()
@@ -36,11 +38,13 @@ function AppInner() {
 
   return (
     <SmoothScroll>
-      {/* Page content */}
+      <Navbar />
+      
       <div style={{ visibility: visible ? 'hidden' : 'visible' }}>
         <Routes>
           <Route path="/"         element={<HomePage />} />
           <Route path="/projects" element={<AllProjectsPage />} />
+          <Route path="/project/:id" element={<ProjectDetail />} />
         </Routes>
       </div>
 

@@ -2,64 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion'
 import { useLoader } from '../context/LoaderContext'
-
-const projects = [
-  {
-    number: '01',
-    title: 'PhishGuard AI',
-    category: 'Full Stack · Security · ML Model',
-    desc: 'AI-powered phishing detection system identifying malicious URLs in real time, integrated with a browser extension to deliver instant alerts and improve browsing safety.',
-    tags: ['React', 'JavaScript', 'Python', 'Machine Learning', 'Browser Extension'],
-    imageUrl: '/projects/project-01.png',
-    modalImageUrl: '/projects/projectpreview1.png', // User will provide PC location
-    liveUrl: 'https://phish-guard-ai-lac.vercel.app/',
-    gitHubUrl: 'https://github.com/Siddh7-ai/PhishGuardAi',
-  },
-
-  {
-    number: '02',
-    title: 'AxCrypt',
-    category: 'Cybersecurity · Python',
-    desc: 'Developed a secure file encryption system with time-based access control and automatic re-encryption, ensuring controlled and confidential file sharing.',
-    tags: ['Python', 'Cryptography', 'File Encryption'],
-    imageUrl: '/projects/project-02.png',
-    modalImageUrl: 'projects/projectpreview2.png',
-    gitHubUrl: 'https://github.com/Siddh7-ai/AxCrypt',
-  },
-
-  {
-    number: '03',
-    title: 'EduLearn',
-    category: 'EdTech · AI-Based Learning Platform',
-    desc: 'AI-driven learning platform that personalizes study content based on student performance, delivering smart recommendations and progress tracking for improved outcomes.',
-    tags: ['HTML', 'CSS', 'JavaScript'],
-    imageUrl: '/projects/project-03.png',
-    modalImageUrl: 'projects/projectpreview3.png',
-    gitHubUrl: 'https://github.com/Siddh7-ai/EduLearn',
-  },
-
-  {
-    number: '04',
-    title: 'ShieldNet',
-    category: 'Security · Network Protection',
-    desc: 'AI-powered WiFi security scanner that detects vulnerabilities in networks and connected devices, providing security scores and actionable insights for safer home networks.',
-    tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'REST API'],
-    imageUrl: '/projects/project-04.png',
-    modalImageUrl: 'projects/projectpreview4.png',
-    gitHubUrl: 'https://github.com/Siddh7-ai/ShieldNet',
-  },
-
-  {
-    number: '05',
-    title: 'CoreInventory',
-    category: 'Full Stack · Inventory Management',
-    desc: 'Role-based inventory management system with real-time tracking of products, deliveries, and stock operations, designed to streamline warehouse workflows.',
-    tags: ['React', 'Node.js', 'Prisma', 'Tailwind'],
-    imageUrl: '/projects/project-05.png',
-    modalImageUrl: 'projects/projectpreview5.png',
-    gitHubUrl: 'https://github.com/Siddh7-ai/CoreInventory/tree/frontend',
-  },
-];
+import { projects } from '../data/projects'
 
 const PIN_COLORS = ['#e74c3c', '#f39c12', '#3498db', '#2ecc71', '#9b59b6']
 
@@ -463,7 +406,10 @@ function Content({ revealed, expanded, setExpanded, isLightOn }) {
               }}
               onClick={e => e.stopPropagation()}>
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 8 }}>PROJECT {expanded.number} — {expanded.year}</p>
-              <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? 36 : 48, color: '#111', lineHeight: 1 }}>{expanded.title}</h2>
+              
+              {/* Reduced title size to logo size (approx 34px) */}
+              <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? 28 : 34, color: '#111', lineHeight: 1 }}>{expanded.title.toUpperCase()}</h2>
+              
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'rgba(17,17,17,0.45)', marginTop: 4, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{expanded.category}</p>
               <img src={expanded.modalImageUrl || expanded.imageUrl} alt={expanded.title} style={{ width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 4, marginTop: 16, border: '1px solid rgba(0,0,0,0.05)' }} />
               <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#555', marginTop: 14, lineHeight: 1.75, fontSize: isMobile ? 12 : 14 }}>{expanded.desc}</p>
@@ -474,7 +420,7 @@ function Content({ revealed, expanded, setExpanded, isLightOn }) {
                 {expanded.liveUrl && (
                   <a href={expanded.liveUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 9, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW LIVE ↗</a>
                 )}
-                <a href={expanded.gitHubUrl || expanded.gitHubUrlUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 9, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW ON GITHUB ↗</a>
+                <a href={expanded.gitHubUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', fontFamily: "'DM Mono', monospace", fontSize: 9, fontWeight: 700, color: '#111', textDecoration: 'none', borderBottom: '1.5px solid #111', paddingBottom: 2 }}>VIEW ON GITHUB ↗</a>
               </div>
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 8, color: 'rgba(17,17,17,0.28)', marginTop: 22, letterSpacing: '0.1em' }}>CLICK OUTSIDE TO CLOSE</p>
             </motion.div>
