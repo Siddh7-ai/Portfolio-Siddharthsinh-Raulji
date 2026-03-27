@@ -11,6 +11,7 @@ const projects = [
     desc: 'AI-powered phishing detection system identifying malicious URLs in real time, integrated with a browser extension to deliver instant alerts and improve browsing safety.',
     tags: ['React', 'JavaScript', 'Python', 'Machine Learning', 'Browser Extension'],
     imageUrl: '/projects/project-01.png',
+    modalImageUrl: '/projects/projectpreview1.png', // User will provide PC location
     liveUrl: 'https://phish-guard-ai-lac.vercel.app/',
     gitHubUrl: 'https://github.com/Siddh7-ai/PhishGuardAi',
   },
@@ -22,6 +23,7 @@ const projects = [
     desc: 'Developed a secure file encryption system with time-based access control and automatic re-encryption, ensuring controlled and confidential file sharing.',
     tags: ['Python', 'Cryptography', 'File Encryption'],
     imageUrl: '/projects/project-02.png',
+    modalImageUrl: 'projects/projectpreview2.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/AxCrypt',
   },
 
@@ -32,6 +34,7 @@ const projects = [
     desc: 'AI-driven learning platform that personalizes study content based on student performance, delivering smart recommendations and progress tracking for improved outcomes.',
     tags: ['HTML', 'CSS', 'JavaScript'],
     imageUrl: '/projects/project-03.png',
+    modalImageUrl: 'projects/projectpreview3.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/EduLearn',
   },
 
@@ -42,6 +45,7 @@ const projects = [
     desc: 'AI-powered WiFi security scanner that detects vulnerabilities in networks and connected devices, providing security scores and actionable insights for safer home networks.',
     tags: ['Python', 'Flask', 'WiFi Security', 'Network Scanner', 'Cybersecurity', 'REST API'],
     imageUrl: '/projects/project-04.png',
+    modalImageUrl: 'projects/projectpreview4.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/ShieldNet',
   },
 
@@ -52,6 +56,7 @@ const projects = [
     desc: 'Role-based inventory management system with real-time tracking of products, deliveries, and stock operations, designed to streamline warehouse workflows.',
     tags: ['React', 'Node.js', 'Prisma', 'Tailwind'],
     imageUrl: '/projects/project-05.png',
+    modalImageUrl: 'projects/projectpreview5.png',
     gitHubUrl: 'https://github.com/Siddh7-ai/CoreInventory/tree/frontend',
   },
 ];
@@ -460,7 +465,7 @@ function Content({ revealed, expanded, setExpanded, isLightOn }) {
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 8 }}>PROJECT {expanded.number} — {expanded.year}</p>
               <h2 style={{ fontFamily: "'Bebas Neue', cursive", fontSize: isMobile ? 36 : 48, color: '#111', lineHeight: 1 }}>{expanded.title}</h2>
               <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'rgba(17,17,17,0.45)', marginTop: 4, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{expanded.category}</p>
-              <img src={expanded.imageUrl} alt={expanded.title} style={{ width: '100%', height: isMobile ? 160 : 200, objectFit: 'cover', borderRadius: 4, marginTop: 16, filter: 'brightness(0.9) contrast(1.1) sepia(0.1)' }} />
+              <img src={expanded.modalImageUrl || expanded.imageUrl} alt={expanded.title} style={{ width: '100%', height: 'auto', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 4, marginTop: 16, border: '1px solid rgba(0,0,0,0.05)' }} />
               <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#555', marginTop: 14, lineHeight: 1.75, fontSize: isMobile ? 12 : 14 }}>{expanded.desc}</p>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 20 }}>
                 {expanded.tags.map(t => <span key={t} style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, padding: '4px 10px', border: '1px solid rgba(17,17,17,0.22)', borderRadius: 12, color: '#333' }}>{t}</span>)}

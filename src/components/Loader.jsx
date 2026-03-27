@@ -7,11 +7,21 @@ export default function Loader() {
   const hiddenRef = useRef(null)
   const rafRef    = useRef(null)
   const stateRef  = useRef(null)
+  const gradientRef = useRef(null)
+  const spriteRef = useRef(null)
 
-  // Default durations
-  const DUR_DEFAULT = { scatter: 70, form: 130, glow: 100, explode: 75, reset: 35 }
-  // Faster durations for transitions
-  const DUR_MAGIC   = { scatter: 30, form: 65,  glow: 45,  explode: 45, reset: 20 }
+  // Specific Durations for SR Logo
+  const DUR_SR      = { scatter: 70, form: 130, glow: 100, explode: 75, reset: 35 }
+  // Smooth durations for "Brewing Magic" (Further 40% Speed Decrease)
+  const DUR_MAGIC   = { scatter: 50, form: 106, glow: 64,  explode: 56, reset: 29 }
+
+  // Particle behavior constants
+  const PARTICLE_SR    = { speedBase: 0.055, speedVar: 0.04, delayMax: 0.45 }
+  const PARTICLE_MAGIC = { speedBase: 0.047, speedVar: 0.033, delayMax: 0.35 }
+
+  // Phase transition alpha steps
+  const ALPHA_SR    = { scatter: 0.018, explode: 0.022, dot: 0.04, dotOut: 0.06 }
+  const ALPHA_MAGIC = { scatter: 0.019, explode: 0.025, dot: 0.046, dotOut: 0.056 }
 
   function getMagicTargets(w, h, hctx) {
     const isMobile = w <= 768
@@ -38,7 +48,7 @@ export default function Loader() {
 
     const data    = hctx.getImageData(0, 0, w, h).data
     const targets = []
-    const scanStep = 1 // Maximum resolution scan
+    const scanStep = 3 // Reduced resolution for multi-level performance
     for (let y = 0; y < h; y += scanStep)
       for (let x = 0; x < w; x += scanStep)
         if (data[(y * w + x) * 4] > 120) targets.push({ x, y })
@@ -100,15 +110,22 @@ export default function Loader() {
     const x = side===0 ? Math.random()*w : side===1 ? w+20 : side===2 ? Math.random()*w : -20
     const y = side===0 ? -20 : side===1 ? Math.random()*h : side===2 ? h+20 : Math.random()*h
     
+    // Restore original Magic size (to fix font style) vs SR logo size (increased for smoothness)
     const size = isMagic 
-      ? Math.random() * 0.7 + 0.5 
+      ? Math.random() * 0.9 + 0.6 
       : Math.random() * 1.5 + 0.8
+      
+    const cfg = isMagic ? PARTICLE_MAGIC : PARTICLE_SR
+    const speed = cfg.speedBase + Math.random() * cfg.speedVar
+    const delay = Math.random() * cfg.delayMax
 
-    return { tx, ty, x, y, vx:0, vy:0,
-      size, alpha:0,
-      speed: isMagic ? 0.08 + Math.random()*0.06 : 0.055 + Math.random()*0.04,
-      delay: isMagic ? Math.random()*0.25 : Math.random()*0.45,
-      exploding:false, evx:0, evy:0 }
+    return { 
+      tx, ty, x, y, vx: 0, vy: 0,
+      size, alpha: 0,
+      speed,
+      delay,
+      exploding: false, evx: 0, evy: 0 
+    }
   }
 
   function init() {
@@ -122,10 +139,31 @@ export default function Loader() {
     hCanvas.height = canvas.height
 
     const w = canvas.width, h = canvas.height
+    const ctx = canvas.getContext('2d')
     const hctx = hCanvas.getContext('2d')
+
+    // Cache the radial gradient to reduce per-frame overhead
+    const vg = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.65)
+    vg.addColorStop(0, 'rgba(0,0,0,0)')
+    vg.addColorStop(1, 'rgba(0,0,0,0.6)')
+    gradientRef.current = vg
+
+    // Create a high-quality particle sprite to avoid expensive arc() calls
+    const sCanvas = document.createElement('canvas')
+    const sSize = 24
+    sCanvas.width = sSize
+    sCanvas.height = sSize
+    const sctx = sCanvas.getContext('2d')
+    sctx.fillStyle = '#ffffff'
+    sctx.beginPath()
+    sctx.arc(sSize/2, sSize/2, sSize/2.2, 0, Math.PI*2)
+    sctx.fill()
+    spriteRef.current = sCanvas
+
     const isMagic = loaderType === 'magic'
     const raw = isMagic ? getMagicTargets(w, h, hctx) : getSRTargets(w, h, hctx)
-    const MAX  = isMagic ? Math.min(raw.length, 3200) : Math.min(raw.length, 650)
+    // Aggressively reduce particle count for Magic loader to fix persistent lag
+    const MAX  = isMagic ? Math.min(raw.length, 6000) : Math.min(raw.length, 10000)
     const step = Math.max(1, Math.floor(raw.length / MAX))
 
     stateRef.current = {
@@ -142,15 +180,16 @@ export default function Loader() {
     const w = canvas.width, h = canvas.height
     const s = stateRef.current
     const isMagic = loaderType === 'magic'
-    const DUR = isMagic ? DUR_MAGIC : DUR_DEFAULT
+    const DUR = isMagic ? DUR_MAGIC : DUR_SR
+    const ACL = isMagic ? ALPHA_MAGIC : ALPHA_SR
 
     ctx.fillStyle = '#0a0a09'
     ctx.fillRect(0, 0, w, h)
-    const vg = ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,Math.max(w,h)*0.65)
-    vg.addColorStop(0,'rgba(0,0,0,0)')
-    vg.addColorStop(1,'rgba(0,0,0,0.6)')
-    ctx.fillStyle = vg
-    ctx.fillRect(0, 0, w, h)
+    
+    if (gradientRef.current) {
+      ctx.fillStyle = gradientRef.current
+      ctx.fillRect(0, 0, w, h)
+    }
 
     s.timer++
 
@@ -170,14 +209,14 @@ export default function Loader() {
       if (s.timer >= DUR.form) { s.phase='glow'; s.timer=0 }
     }
     else if (s.phase === 'glow') {
-      s.dotAlpha = Math.min(1, s.dotAlpha + 0.04)
-      s.glow += 0.055 * s.glowDir
+      s.dotAlpha = Math.min(1, s.dotAlpha + ACL.dot)
+      s.glow += 0.032 * s.glowDir
       if (s.glow >= 1)    s.glowDir = -1
       if (s.glow <= 0.15) s.glowDir =  1
       if (s.timer >= DUR.glow) { s.phase='explode'; s.timer=0 }
     }
     else if (s.phase === 'explode') {
-      s.dotAlpha = Math.max(0, s.dotAlpha - 0.06)
+      s.dotAlpha = Math.max(0, s.dotAlpha - ACL.dotOut)
       if (s.timer >= DUR.explode) { s.phase='reset'; s.timer=0 }
     }
     else if (s.phase === 'reset') {
@@ -195,7 +234,7 @@ export default function Loader() {
       if (s.phase==='scatter') {
         p.vx+=(Math.random()-.5)*0.5; p.vy+=(Math.random()-.5)*0.5
         p.vx*=0.94; p.vy*=0.94; p.x+=p.vx; p.y+=p.vy
-        p.alpha=Math.min(0.4,p.alpha+0.018)
+        p.alpha=Math.min(0.4,p.alpha+ACL.scatter)
       } else if (s.phase==='form') {
         const raw=Math.max(0,(s.fp-p.delay)/(1-p.delay))
         const ease=raw<0.5?2*raw*raw:1-Math.pow(-2*raw+2,2)/2
@@ -212,16 +251,21 @@ export default function Loader() {
           p.evx=Math.cos(angle)*spd; p.evy=Math.sin(angle)*spd
         }
         p.evx*=0.93; p.evy*=0.93; p.x+=p.evx; p.y+=p.evy
-        p.alpha=Math.max(0,p.alpha-0.022)
+        p.alpha=Math.max(0,p.alpha-ACL.explode)
       }
     })
 
     ctx.save()
     ctx.fillStyle='#e8e6e1'
+    const sprite = spriteRef.current
     s.particles.forEach(p => {
       if (useGlow) return
       ctx.globalAlpha=p.alpha
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill()
+      if (sprite) {
+        ctx.drawImage(sprite, p.x - p.size, p.y - p.size, p.size * 2, p.size * 2)
+      } else {
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill()
+      }
     })
     ctx.restore()
 
@@ -230,9 +274,15 @@ export default function Loader() {
       ctx.shadowBlur = 0
       ctx.shadowColor = 'transparent'
       ctx.fillStyle = '#e8e6e1'
+      const sprite = spriteRef.current
       s.particles.forEach(p => {
-        ctx.globalAlpha = p.alpha
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill()
+        // Decrease intensity by 10% for Magic loader
+        ctx.globalAlpha = isMagic ? p.alpha * 0.9 : p.alpha
+        if (sprite) {
+          ctx.drawImage(sprite, p.x - p.size, p.y - p.size, p.size * 2, p.size * 2)
+        } else {
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill()
+        }
       })
       ctx.restore()
     }

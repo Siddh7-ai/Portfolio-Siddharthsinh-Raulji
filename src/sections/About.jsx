@@ -290,12 +290,12 @@ export default function About() {
   const [typingStarted, setTypingStarted] = useState(false)
   useEffect(() => {
     if (inView && !typingStarted) {
-      const t = setTimeout(() => setTypingStarted(true), 700)
+      const t = setTimeout(() => setTypingStarted(true), 200)
       return () => clearTimeout(t)
     }
   }, [inView, typingStarted])
 
-  const { displayed, done } = useTypingEffect(BIO_TEXT, { started: typingStarted, speed: 3 })
+  const { displayed, done } = useTypingEffect(BIO_TEXT, { started: typingStarted, speed: 1 })
 
   return (
     <>
