@@ -25,7 +25,7 @@ export default function Loader() {
 
   function getMagicTargets(w, h, hctx) {
     const isMobile = w <= 768
-    const fontSize = isMobile ? Math.min(w, h) * 0.135 : Math.min(w, h) * 0.16
+    const fontSize = isMobile ? Math.min(w, h) * 0.12 : Math.min(w, h) * 0.16
     
     hctx.clearRect(0, 0, w, h)
     hctx.fillStyle = '#ffffff'
@@ -37,12 +37,12 @@ export default function Loader() {
       ? customText.toUpperCase().split(' ') 
       : ["BREWING", "DIGITAL MAGIC"]
       
-    const lineHeight = fontSize * (isMobile ? 0.95 : 0.92)
+    const lineHeight = fontSize * (isMobile ? 0.88 : 0.92)
     const totalH = lines.length * lineHeight
     const startY = h / 2 - totalH / 2 + lineHeight / 2
 
     if ('letterSpacing' in hctx) {
-      hctx.letterSpacing = isMobile ? "2px" : "4px"
+      hctx.letterSpacing = isMobile ? "1px" : "4px"
     }
 
     lines.forEach((line, i) => {
@@ -52,7 +52,7 @@ export default function Loader() {
 
     const data    = hctx.getImageData(0, 0, w, h).data
     const targets = []
-    const scanStep = 3 // Reduced resolution for multi-level performance
+    const scanStep = isMobile ? 2 : 3 // Higher density for mobile text
     for (let y = 0; y < h; y += scanStep)
       for (let x = 0; x < w; x += scanStep)
         if (data[(y * w + x) * 4] > 120) targets.push({ x, y })
@@ -114,10 +114,13 @@ export default function Loader() {
     const x = side===0 ? Math.random()*w : side===1 ? w+20 : side===2 ? Math.random()*w : -20
     const y = side===0 ? -20 : side===1 ? Math.random()*h : side===2 ? h+20 : Math.random()*h
     
-    // Restore original Magic size (to fix font style) vs SR logo size (increased for smoothness)
-    const size = isMagic 
-      ? Math.random() * 0.9 + 0.6 
-      : Math.random() * 1.5 + 0.8
+    const isMobile = w <= 768
+    // Size increase for mobile text to avoid grainy look, preserve desktop sizing exactly
+    const size = (isMagic && isMobile)
+      ? Math.random() * 1.2 + 0.8
+      : isMagic 
+        ? Math.random() * 0.9 + 0.6 
+        : Math.random() * 1.5 + 0.8
       
     const cfg = isMagic ? PARTICLE_MAGIC : PARTICLE_SR
     const speed = cfg.speedBase + Math.random() * cfg.speedVar
@@ -166,8 +169,10 @@ export default function Loader() {
 
     const isMagic = loaderType === 'magic'
     const raw = isMagic ? getMagicTargets(w, h, hctx) : getSRTargets(w, h, hctx)
-    // Aggressively reduce particle count for Magic loader to fix persistent lag
-    const MAX  = isMagic ? Math.min(raw.length, 6000) : Math.min(raw.length, 10000)
+    
+    const isMobile = w <= 768
+    const MAX_LIMIT = isMobile ? 9050 : 8080 // 9050 for mobile, 8080 for desktop
+    const MAX = isMagic ? Math.min(raw.length, MAX_LIMIT) : Math.min(raw.length, 10000)
     const step = Math.max(1, Math.floor(raw.length / MAX))
 
     stateRef.current = {
