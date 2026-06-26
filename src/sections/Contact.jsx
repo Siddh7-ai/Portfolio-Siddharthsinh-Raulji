@@ -106,11 +106,14 @@ export default function Contact() {
           'service_d7e772m',    // replace with your EmailJS Service ID
           'template_rx3o3v8',   // replace with your EmailJS Template ID
           formRef.current,
-          'kFvHfRNH-JC6RfDXs'     // replace with your EmailJS Public Key
+          {
+            publicKey: 'kFvHfRNH-JC6RfDXs' // replace with your EmailJS Public Key
+          }
         )
         setSent(true)
         setForm({ name: '', email: '', message: '' })
       } catch (err) {
+        console.error('EmailJS Error:', err)
         setError('Something went wrong. Please try again or email me directly.')
       } finally {
         setSending(false)

@@ -230,11 +230,11 @@ function IDCard({ inView }) {
               <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#0a0a09', border: '2px solid rgba(255,255,255,0.15)', zIndex: 1 }} />
             </div>
 
-            {/* Photo */}
-            <div style={{ width: '100%', height: 220, background: 'linear-gradient(135deg, #1a1a18 0%, #2a2a28 100%)', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', bottom: -20, left: -20, width: 120, height: 120, background: 'rgba(255,255,255,0.05)', transform: 'rotate(20deg)' }} />
-              <div style={{ position: 'absolute', top: -10, right: -10, width: 80, height: 80, background: 'rgba(255,255,255,0.04)', borderRadius: '0 0 0 40px', transform: 'rotate(-10deg)' }} />
-              <img src="/photo.png" alt="Siddharthsinh" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', display: 'block' }} />
+            <div style={{ width: '100%', height: 220, background: '#f0eeea', position: 'relative', overflow: 'hidden' }}>
+              {/* Blurred background to fill empty side spaces */}
+              <img src="/sid.jpeg" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(10px) brightness(0.9)', position: 'absolute', top: 0, left: 0, opacity: 0.55 }} />
+              {/* Crisp foreground image */}
+              <img src="/sid.jpeg" alt="Siddharthsinh" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', position: 'relative', zIndex: 1, display: 'block' }} />
             </div>
 
             {/* Details */}
