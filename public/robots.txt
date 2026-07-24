@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://siddharthsinhraulji.vercel.app/sitemap.xml

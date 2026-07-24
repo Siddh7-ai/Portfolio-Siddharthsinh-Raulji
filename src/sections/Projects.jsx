@@ -334,7 +334,7 @@ function HangingString({ pullY, isPulled, onToggleLight }) {
       )}
       {isPulled && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: [0, 0.6, 0.3, 0.6] }} transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-          style={{ position: 'absolute', top: BASE_H + 10, fontFamily: "'DM Mono', monospace", fontSize: 8, color: 'rgba(255,220,150,0.45)', letterSpacing: '0.14em', textTransform: 'uppercase', whiteSpace: 'nowrap', userSelect: 'none', pointerEvents: 'none' }}>
+          style={{ position: 'absolute', top: BASE_H + 10, fontFamily: "'DM Mono', monospace", fontSize: 18, color: 'rgba(255,220,150,0.45)', letterSpacing: '0.14em', textTransform: 'uppercase', whiteSpace: 'nowrap', userSelect: 'none', pointerEvents: 'none' }}>
           ↑ CLICK
         </motion.div>
       )}
