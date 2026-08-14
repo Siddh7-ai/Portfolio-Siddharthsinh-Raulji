@@ -152,7 +152,6 @@ function MagneticBtn({ children, href, target, rel, download, onNavClick }) {
 
 /* ── Single nav link ── */
 function NavLink({ label, href, delay, onNavClick }) {
-  const { triggerLoader } = useLoader()
   const navigate = useNavigate()
 
   const handleClick = useCallback((e) => {
@@ -160,22 +159,18 @@ function NavLink({ label, href, delay, onNavClick }) {
     if (onNavClick) onNavClick();
     const id = href.replace('#','')
     const isOnHomePage = window.location.pathname === '/' || window.location.pathname === ''
-    triggerLoader(() => {
-      if (!isOnHomePage) {
-        navigate('/')
-        setTimeout(() => {
-          const el = document.getElementById(id)
-          if (el) el.scrollIntoView({ behavior: 'smooth' })
-        }, 150)
-      } else {
-        setTimeout(() => {
-          const el = document.getElementById(id)
-          if (el) el.scrollIntoView({ behavior: 'smooth' })
-          else window.scrollTo({ top: 0, behavior: 'smooth' })
-        }, 80)
-      }
-    })
-  }, [href, triggerLoader, navigate, onNavClick])
+    if (!isOnHomePage) {
+      navigate('/')
+      setTimeout(() => {
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }, 150)
+    } else {
+      const el = document.getElementById(id)
+      if (el) el.scrollIntoView({ behavior: 'smooth' })
+      else window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [href, navigate, onNavClick])
 
   return (
     <motion.a
